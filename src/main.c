@@ -1,17 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "memory/bus.h"
+#include "nes/nes.h"
 
 int main() {
-  bus_t* bus = bus_create();
+  nes_t* nes = nes_create();
 
-  bus_write8(bus, 0x0010, 0x23);
-  u8 value = bus_read8(bus, 0x0810);
+  bus_write8(nes->bus, 0x0010, 0x23);
+  u8 value = bus_read8(nes->bus, 0x0810);
 
   printf("%02X\n", value);
 
-  bus_destroy(bus);
+  nes_destroy(nes);
 
   return 0;
 }

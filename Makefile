@@ -2,12 +2,13 @@ CC = gcc
 CFLAGS = -Wall -g
 
 OUT = build/nesemu
-SRC = src/memory/memory.c src/memory/bus.c 
 MAIN = src/main.c
+SRC = src/memory/memory.c src/memory/bus.c \
+			src/nes/nes.c
 
 TEST_OUT = build/test
-TEST_SRC = $(SRC)
 TEST_MAIN = test/main.c
+TEST_SRC = $(SRC)
 
 all: build
 
