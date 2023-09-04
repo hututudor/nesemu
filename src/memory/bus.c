@@ -29,26 +29,19 @@ void bus_destroy(bus_t* bus) {
 bus_address_t parse_bus_address(bus_t* bus, u16 address) {
   bus_address_t bus_address;
 
-  if (address < 0x2000) {
+  if (address < bus->ppu_registers->start) {
     bus_address.memory = bus->ram;
-    bus_address.address = address & 0x07FF;
-    return bus_address;
-  }
-
-  if (address < 0x4000) {
+  } else if (address < bus->apu_and_io->start) {
     bus_address.memory = bus->ppu_registers;
-    bus_address.address = (address - 0x2000) & 0x0007;
-    return bus_address;
-  }
-
-  if (address < 0x4020) {
+  } else if (address < bus->rom->start) {
     bus_address.memory = bus->apu_and_io;
-    bus_address.address = (address - 0x4000);
-    return bus_address;
+  } else {
+    bus_address.memory = bus->rom;
   }
 
-  bus_address.memory = bus->rom;
-  bus_address.address = (address - 0x4020);
+  bus_address.address =
+      (address - bus_address.memory->start) & (bus_address.memory->size - 1);
+
   return bus_address;
 }
 
