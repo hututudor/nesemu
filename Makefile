@@ -1,8 +1,9 @@
 CC = gcc
 CFLAGS = -Wall -g
 
-SRC = src/main.c
-OUT = build/emulator
+OUT = build/nesemu
+SRC = src/main.c \
+			src/memory/memory.c src/memory/bus.c 
 
 all: build
 
