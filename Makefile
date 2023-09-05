@@ -4,7 +4,8 @@ CFLAGS = -Wall -g
 OUT = build/nesemu
 MAIN = src/main.c
 SRC = src/memory/memory.c src/memory/bus.c \
-			src/nes/nes.c src/rom/rom.c 
+			src/nes/nes.c src/rom/rom.c \
+			src/mappers/mapper.c src/mappers/mapper_0.c 
 
 TEST_OUT = build/test
 TEST_MAIN = test/main.c

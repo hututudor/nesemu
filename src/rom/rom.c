@@ -19,7 +19,7 @@ rom_t* rom_load(u8* data) {
   if (rom->header.prg_rom_size) {
     rom->prg_rom = (u8*)calloc(rom->header.prg_rom_size, 0x4000);
 
-    s8 prg_rom_total_size = rom->header.prg_rom_size * 0x4000;
+    u16 prg_rom_total_size = rom->header.prg_rom_size * 0x4000;
     memcpy(rom->prg_rom, data + data_offset, prg_rom_total_size);
     data_offset += prg_rom_total_size;
   }
@@ -27,7 +27,7 @@ rom_t* rom_load(u8* data) {
   if (rom->header.chr_rom_size) {
     rom->chr_rom = (u8*)calloc(rom->header.chr_rom_size, 0x2000);
 
-    s8 chr_rom_total_size = rom->header.chr_rom_size * 0x2000;
+    u16 chr_rom_total_size = rom->header.chr_rom_size * 0x2000;
     memcpy(rom->chr_rom, data + data_offset, chr_rom_total_size);
   }
 
