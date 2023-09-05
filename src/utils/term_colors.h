@@ -1,5 +1,4 @@
-#ifndef TERM_COLORS
-#define TERM_COLORS
+#pragma once
 
 #define TERM_COLOR_BLACK "\x1B[30m"
 #define TERM_COLOR_RED "\x1B[31m"
@@ -10,5 +9,3 @@
 #define TERM_COLOR_CYAN "\x1B[36m"
 #define TERM_COLOR_WHITE "\x1B[37m"
 #define TERM_COLOR_RESET "\x1B[0m"
-
-#endif

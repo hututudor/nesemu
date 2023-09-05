@@ -4,16 +4,18 @@ CFLAGS = -Wall -g
 OUT = build/nesemu
 MAIN = src/main.c
 SRC = src/memory/memory.c src/memory/bus.c \
-			src/nes/nes.c
+			src/nes/nes.c src/rom/rom.c 
 
 TEST_OUT = build/test
 TEST_MAIN = test/main.c
 TEST_SRC = $(SRC)
 
+ROM = roms/hello.nes
+
 all: build
 
 run: build
-	$(OUT)
+	$(OUT) $(ROM)
 
 build: 
 	@mkdir -p build

@@ -2,16 +2,47 @@
 #include <stdlib.h>
 
 #include "nes/nes.h"
+#include "rom/rom.h"
+#include "utils/file.h"
 
-int main() {
-  nes_t* nes = nes_create();
+void usage(char* program_name);
 
-  bus_write8(nes->bus, 0x0010, 0x23);
-  u8 value = bus_read8(nes->bus, 0x0810);
+int main(int argv, char** argc) {
+  if (argv < 2) {
+    usage(argc[0]);
+    return 0;
+  }
 
-  printf("%02X\n", value);
+  char* rom_path = argc[1];
+  u8* rom_data = read_entire_file(rom_path);
 
-  nes_destroy(nes);
+  if (!rom_data) {
+    perror("Could not read file\n");
+    return 0;
+  }
+
+  if (!rom_is_valid(rom_data)) {
+    perror("Provided file is not a NES rom\n");
+    return 0;
+  }
+
+  rom_t* rom = rom_load(rom_data);
+  free(rom_data);
+
+  rom_debug_print(rom);
+
+  // nes_t* nes = nes_create();
+
+  // bus_write8(nes->bus, 0x0010, 0x23);
+  // u8 value = bus_read8(nes->bus, 0x0810);
+
+  // printf("%02X\n", value);
+
+  // nes_destroy(nes);
 
   return 0;
+}
+
+void usage(char* program_name) {
+  printf("Usage: %s <ROM PATH>\n", program_name);
 }
