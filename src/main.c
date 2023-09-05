@@ -32,26 +32,18 @@ int main(int argv, char** argc) {
 
   rom_debug_print(rom);
 
-  mapper_t* mapper = mapper_create(rom);
-
-  if (!mapper) {
+  if (!mapper_is_available(rom->header.mapper_number)) {
     printf("Provided ROM has a mapper that is not yet implemented: %d\n",
            rom->header.mapper_number);
     return 0;
   }
 
-  printf("%02X\n", mapper->prg_read8(mapper, 0x0000));
+  nes_t* nes = nes_create(rom);
+  u8 value = bus_read8(nes->bus, 0x4020);
 
-  mapper_destroy(mapper);
+  printf("%02X\n", value);
 
-  // nes_t* nes = nes_create();
-
-  // bus_write8(nes->bus, 0x0010, 0x23);
-  // u8 value = bus_read8(nes->bus, 0x0810);
-
-  // printf("%02X\n", value);
-
-  // nes_destroy(nes);
+  nes_destroy(nes);
 
   return 0;
 }
