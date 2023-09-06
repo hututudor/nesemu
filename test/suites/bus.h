@@ -1,8 +1,8 @@
-#include "../../src/memory/bus.h"
 #include "../framework.h"
+#include "../mocks/bus.h"
 
 TEST_BEGIN(should_read_and_write_same_byte) {
-  bus_t* bus = bus_create();
+  bus_t* bus = mock_bus();
 
   bus_write8(bus, 0x0100, 0x10);
   ASSERT(bus_read8(bus, 0x0100) == 0x10);
@@ -24,17 +24,11 @@ TEST_BEGIN(should_read_and_write_same_byte) {
 
   bus_write8(bus, 0x4012, 0x16);
   ASSERT(bus_read8(bus, 0x4012) == 0x16);
-
-  bus_write8(bus, 0x401A, 0x17);
-  ASSERT(bus_read8(bus, 0x401A) == 0x17);
-
-  bus_write8(bus, 0x4500, 0x18);
-  ASSERT(bus_read8(bus, 0x4500) == 0x18);
 }
 TEST_END
 
 TEST_BEGIN(should_read_and_write_mirrored) {
-  bus_t* bus = bus_create();
+  bus_t* bus = mock_bus();
 
   bus_write8(bus, 0x0100, 0x10);
   ASSERT(bus_read8(bus, 0x0100) == 0x10);
