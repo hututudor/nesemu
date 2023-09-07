@@ -22,3 +22,7 @@ void cpu_destroy(cpu_t* cpu) {
 
   free(cpu);
 }
+
+u8 cpu_fetch8(cpu_t* cpu) { return bus_read8(cpu->bus, cpu->pc++); }
+
+u16 cpu_fetch16(cpu_t* cpu) { return bus_read16(cpu->bus, cpu->pc += 2); }

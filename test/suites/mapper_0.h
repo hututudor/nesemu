@@ -6,6 +6,8 @@ TEST_BEGIN(should_allow_reading_from_prg_rom) {
 
   ASSERT(bus_read8(bus, 0x4020) == 0x78);
   ASSERT(bus_read8(bus, 0x4021) == 0xD8);
+
+  ASSERT(bus_read16(bus, 0x4020) == 0xD878);
 }
 TEST_END
 

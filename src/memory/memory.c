@@ -48,3 +48,20 @@ void memory_write8(memory_t* memory, u16 address, u8 value) {
 
   memory->data[address] = value;
 }
+
+u16 memory_read16(memory_t* memory, u16 address) {
+  if ((address + 1) > memory->size) {
+    ASSERT_UNREACHABLE;
+  }
+
+  return (memory->data[address + 1] << 8) | memory->data[address];
+}
+
+void memory_write16(memory_t* memory, u16 address, u16 value) {
+  if ((address + 1) > memory->end) {
+    ASSERT_UNREACHABLE;
+  }
+
+  memory->data[address] = value & 0xFF;
+  memory->data[address + 1] = (value & 0xFF00) >> 8;
+}

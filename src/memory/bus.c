@@ -55,3 +55,17 @@ void bus_write8(bus_t* bus, u16 address, u8 value) {
   bus_address_t bus_address = parse_bus_address(bus, address);
   memory_write8(bus_address.memory, bus_address.address, value);
 }
+
+u16 bus_read16(bus_t* bus, u16 address) {
+  if (address >= 0x4020) {
+    return bus->mapper->prg_read16(bus->mapper, address - 0x4020);
+  }
+
+  bus_address_t bus_address = parse_bus_address(bus, address);
+  return memory_read16(bus_address.memory, bus_address.address);
+}
+
+void bus_write16(bus_t* bus, u16 address, u16 value) {
+  bus_address_t bus_address = parse_bus_address(bus, address);
+  memory_write16(bus_address.memory, bus_address.address, value);
+}

@@ -27,6 +27,32 @@ TEST_BEGIN(should_read_and_write_same_byte) {
 }
 TEST_END
 
+TEST_BEGIN(should_read_and_write_same_2_bytes) {
+  bus_t* bus = mock_bus();
+
+  bus_write16(bus, 0x0100, 0x1020);
+  ASSERT(bus_read16(bus, 0x0100) == 0x1020);
+
+  bus_write16(bus, 0x0900, 0x1120);
+  ASSERT(bus_read16(bus, 0x0900) == 0x1120);
+
+  bus_write16(bus, 0x1100, 0x1220);
+  ASSERT(bus_read16(bus, 0x1100) == 0x1220);
+
+  bus_write16(bus, 0x1900, 0x1320);
+  ASSERT(bus_read16(bus, 0x1900) == 0x1320);
+
+  bus_write16(bus, 0x2002, 0x1420);
+  ASSERT(bus_read16(bus, 0x2002) == 0x1420);
+
+  bus_write16(bus, 0x2100, 0x1520);
+  ASSERT(bus_read16(bus, 0x2100) == 0x1520);
+
+  bus_write16(bus, 0x4012, 0x1620);
+  ASSERT(bus_read16(bus, 0x4012) == 0x1620);
+}
+TEST_END
+
 TEST_BEGIN(should_read_and_write_mirrored) {
   bus_t* bus = mock_bus();
 
@@ -45,5 +71,6 @@ TEST_END
 
 SUITE_BEGIN(bus)
 SUITE_ADD(should_read_and_write_same_byte)
+SUITE_ADD(should_read_and_write_same_2_bytes)
 SUITE_ADD(should_read_and_write_mirrored)
 SUITE_END
