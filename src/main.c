@@ -39,9 +39,8 @@ int main(int argv, char** argc) {
   }
 
   nes_t* nes = nes_create(rom);
-  u8 value = bus_read8(nes->bus, 0x4020);
 
-  printf("%02X\n", value);
+  cpu_debug_print_state(nes->cpu);
 
   nes_destroy(nes);
 
