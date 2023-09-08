@@ -27,6 +27,8 @@ mapper_t* mapper_create(rom_t* rom) {
   mapper->destroy = mapper_config->destroy;
   mapper->prg_read8 = mapper_config->prg_read8;
   mapper->prg_read16 = mapper_config->prg_read16;
+  mapper->prg_write8 = mapper_config->prg_write8;
+  mapper->prg_write16 = mapper_config->prg_write16;
 
   mapper->create(mapper);
 

@@ -8,6 +8,8 @@ typedef void (*create_mapper_t)(void*);
 typedef void (*destroy_mapper_t)(void*);
 typedef u8 (*prg_read8_mapper_t)(void*, u16);
 typedef u16 (*prg_read16_mapper_t)(void*, u16);
+typedef void (*prg_write8_mapper_t)(void*, u16, u8);
+typedef void (*prg_write16_mapper_t)(void*, u16, u16);
 
 typedef struct {
   rom_t* rom;
@@ -18,6 +20,8 @@ typedef struct {
   destroy_mapper_t destroy;
   prg_read8_mapper_t prg_read8;
   prg_read16_mapper_t prg_read16;
+  prg_write8_mapper_t prg_write8;
+  prg_write16_mapper_t prg_write16;
 } mapper_t;
 
 typedef struct {
@@ -25,6 +29,8 @@ typedef struct {
   destroy_mapper_t destroy;
   prg_read8_mapper_t prg_read8;
   prg_read16_mapper_t prg_read16;
+  prg_write8_mapper_t prg_write8;
+  prg_write16_mapper_t prg_write16;
 } mapper_config_t;
 
 bool mapper_is_available(u8 mapper_number);
