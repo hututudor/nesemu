@@ -31,6 +31,7 @@ int main(int argv, char** argc) {
   free(rom_data);
 
   rom_debug_print(rom);
+  printf("\n");
 
   if (!mapper_is_available(rom->header.mapper_number)) {
     printf("Provided ROM has a mapper that is not yet implemented: %d\n",
@@ -40,7 +41,11 @@ int main(int argv, char** argc) {
 
   nes_t* nes = nes_create(rom);
 
-  cpu_debug_print_state(nes->cpu);
+  while (true) {
+    cpu_debug_print_state(nes->cpu);
+    printf("\n");
+    cpu_execute(nes->cpu);
+  }
 
   nes_destroy(nes);
 

@@ -122,7 +122,7 @@ void cpu_sec(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
 void cpu_sed(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
-void cpu_sei(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_sei(cpu_t* cpu, address_mode_t address_mode) { cpu->status.i = 1; }
 
 void cpu_brk(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 

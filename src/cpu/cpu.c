@@ -29,6 +29,14 @@ void cpu_destroy(cpu_t* cpu) {
   free(cpu);
 }
 
+void cpu_execute(cpu_t* cpu) {
+  u8 opcode = cpu_fetch8(cpu);
+  instruction_t instruction = instructions_table[opcode];
+
+  address_mode_t address_mode = instruction.parse_address_mode(cpu);
+  instruction.execute(cpu, address_mode);
+}
+
 u8 cpu_fetch8(cpu_t* cpu) { return bus_read8(cpu->bus, cpu->pc++); }
 
 u16 cpu_fetch16(cpu_t* cpu) { return bus_read16(cpu->bus, cpu->pc += 2); }

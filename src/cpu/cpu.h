@@ -43,6 +43,8 @@ typedef struct {
 cpu_t* cpu_create(bus_t* bus);
 void cpu_destroy(cpu_t* cpu);
 
+void cpu_execute(cpu_t* cpu);
+
 u8 cpu_fetch8(cpu_t* cpu);
 u16 cpu_fetch16(cpu_t* cpu);
 
