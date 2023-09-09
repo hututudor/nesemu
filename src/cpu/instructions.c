@@ -4,11 +4,26 @@
 
 #include "../utils/assert.h"
 
-void cpu_lda(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_lda(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->a = address_mode.value;
 
-void cpu_ldx(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+  cpu_set_status_z(cpu, cpu->a);
+  cpu_set_status_n(cpu, cpu->a);
+}
 
-void cpu_ldy(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_ldx(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->x = address_mode.value;
+
+  cpu_set_status_z(cpu, cpu->x);
+  cpu_set_status_n(cpu, cpu->x);
+}
+
+void cpu_ldy(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->y = address_mode.value;
+
+  cpu_set_status_z(cpu, cpu->y);
+  cpu_set_status_n(cpu, cpu->y);
+}
 
 void cpu_sta(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 

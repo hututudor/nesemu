@@ -46,3 +46,9 @@ u16 cpu_fetch_nmi_vector(cpu_t* cpu) { return bus_read16(cpu->bus, 0xFFFA); }
 u16 cpu_fetch_irq_vector(cpu_t* cpu) { return bus_read16(cpu->bus, 0xFFFE); }
 
 u16 cpu_fetch_reset_vector(cpu_t* cpu) { return bus_read16(cpu->bus, 0xFFFC); }
+
+void cpu_set_status_z(cpu_t* cpu, u8 value) { cpu->status.z = value == 0; }
+
+void cpu_set_status_n(cpu_t* cpu, u8 value) {
+  cpu->status.n = (value >> 7) & 1;
+}

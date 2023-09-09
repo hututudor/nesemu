@@ -7,7 +7,11 @@ address_mode_t cpu_address_mode_implied(cpu_t* cpu) {
   return address_mode;
 }
 
-address_mode_t cpu_address_mode_immediate(cpu_t* cpu) { ASSERT_UNREACHABLE; }
+address_mode_t cpu_address_mode_immediate(cpu_t* cpu) {
+  address_mode_t address_mode = {0};
+  address_mode.value = cpu_fetch8(cpu);
+  return address_mode;
+}
 
 address_mode_t cpu_address_mode_a(cpu_t* state) { ASSERT_UNREACHABLE; }
 
