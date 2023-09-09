@@ -37,17 +37,47 @@ void cpu_sty(cpu_t* cpu, address_mode_t address_mode) {
   bus_write8(cpu->bus, address_mode.address, cpu->y);
 }
 
-void cpu_tax(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
+void cpu_tax(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->x = cpu->a;
 
-void cpu_tay(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
+  cpu_set_status_z(cpu, cpu->x);
+  cpu_set_status_n(cpu, cpu->x);
+}
 
-void cpu_txa(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
+void cpu_tay(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->y = cpu->a;
 
-void cpu_tya(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
+  cpu_set_status_z(cpu, cpu->y);
+  cpu_set_status_n(cpu, cpu->y);
+}
 
-void cpu_tsx(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
+void cpu_txa(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->a = cpu->x;
 
-void cpu_txs(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
+  cpu_set_status_z(cpu, cpu->a);
+  cpu_set_status_n(cpu, cpu->a);
+}
+
+void cpu_tya(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->a = cpu->y;
+
+  cpu_set_status_z(cpu, cpu->a);
+  cpu_set_status_n(cpu, cpu->a);
+}
+
+void cpu_tsx(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->x = cpu->sp;
+
+  cpu_set_status_z(cpu, cpu->x);
+  cpu_set_status_n(cpu, cpu->x);
+}
+
+void cpu_txs(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->sp = cpu->x;
+
+  cpu_set_status_z(cpu, cpu->sp);
+  cpu_set_status_n(cpu, cpu->sp);
+}
 
 void cpu_pha(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
 
