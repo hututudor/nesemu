@@ -262,6 +262,242 @@ TEST_BEGIN(should_execute_tsx) {
 }
 TEST_END
 
+TEST_BEGIN(should_execute_inc_zp) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x0002, 0xFF);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_INC_ZP);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x02);
+
+  cpu_execute(cpu);
+  ASSERT(bus_read8(cpu->bus, 0x00002) == 0x00);
+  ASSERT(cpu->status.z == 1);
+  ASSERT(cpu->status.n == 0);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_inc_zp_x) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x0003, 0xFF);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDX_IMMEDIATE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x01);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_INC_ZP_X);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC003 - 0x4020, 0x02);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->x == 1);
+
+  cpu_execute(cpu);
+  ASSERT(bus_read8(cpu->bus, 0x0003) == 0x00);
+  ASSERT(cpu->status.z == 1);
+  ASSERT(cpu->status.n == 0);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_inc_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x0202, 0xFE);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_INC_ABSOLUTE);
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xC001 - 0x4020, 0x0202);
+
+  cpu_execute(cpu);
+  ASSERT(bus_read8(cpu->bus, 0x0202) == 0xFF);
+  ASSERT(cpu->status.z == 0);
+  ASSERT(cpu->status.n == 1);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_inc_absolute_x) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x0103, 0xFE);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDX_IMMEDIATE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x01);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_INC_ABSOLUTE_X);
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xC003 - 0x4020, 0x0102);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->x == 1);
+
+  cpu_execute(cpu);
+  ASSERT(bus_read8(cpu->bus, 0x0103) == 0xFF);
+  ASSERT(cpu->status.z == 0);
+  ASSERT(cpu->status.n == 1);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_inx) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDX_IMMEDIATE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0xFF);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_INX);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->x == 0xFF);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->x == 0x00);
+  ASSERT(cpu->status.z == 1);
+  ASSERT(cpu->status.n == 0);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_iny) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDY_IMMEDIATE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0xFF);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_INY);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->y == 0xFF);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->y == 0x00);
+  ASSERT(cpu->status.z == 1);
+  ASSERT(cpu->status.n == 0);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_dec_zp) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x0002, 0x01);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_DEC_ZP);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x02);
+
+  cpu_execute(cpu);
+  ASSERT(bus_read8(cpu->bus, 0x00002) == 0x00);
+  ASSERT(cpu->status.z == 1);
+  ASSERT(cpu->status.n == 0);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_dec_zp_x) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x0003, 0x00);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDX_IMMEDIATE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x01);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_DEC_ZP_X);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC003 - 0x4020, 0x02);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->x == 1);
+
+  cpu_execute(cpu);
+  ASSERT(bus_read8(cpu->bus, 0x0003) == 0xFF);
+  ASSERT(cpu->status.z == 0);
+  ASSERT(cpu->status.n == 1);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_dec_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x0202, 0xFF);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_DEC_ABSOLUTE);
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xC001 - 0x4020, 0x0202);
+
+  cpu_execute(cpu);
+  ASSERT(bus_read8(cpu->bus, 0x0202) == 0xFE);
+  ASSERT(cpu->status.z == 0);
+  ASSERT(cpu->status.n == 1);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_dec_absolute_x) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x0103, 0x01);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDX_IMMEDIATE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x01);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_DEC_ABSOLUTE_X);
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xC003 - 0x4020, 0x0102);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->x == 1);
+
+  cpu_execute(cpu);
+  ASSERT(bus_read8(cpu->bus, 0x0103) == 0x00);
+  ASSERT(cpu->status.z == 1);
+  ASSERT(cpu->status.n == 0);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_dex) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDX_IMMEDIATE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0xFF);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_DEX);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->x == 0xFF);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->x == 0xFE);
+  ASSERT(cpu->status.z == 0);
+  ASSERT(cpu->status.n == 1);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_dey) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDY_IMMEDIATE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0xFF);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_DEY);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->y == 0xFF);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->y == 0xFE);
+  ASSERT(cpu->status.z == 0);
+  ASSERT(cpu->status.n == 1);
+}
+TEST_END
+
 TEST_BEGIN(should_execute_clc) {
   cpu_t* cpu = mock_cpu();
 
@@ -360,24 +596,41 @@ TEST_BEGIN(should_execute_sei) {
 }
 TEST_END
 
-SUITE_BEGIN(cpu)
-SUITE_ADD(should_execute_lda_immediate)
-SUITE_ADD(should_execute_ldx_immediate)
-SUITE_ADD(should_execute_ldy_immediate)
-SUITE_ADD(should_execute_sta_absolute)
-SUITE_ADD(should_execute_stx_absolute)
-SUITE_ADD(should_execute_sty_absolute)
-SUITE_ADD(should_execute_tax)
-SUITE_ADD(should_execute_txa)
-SUITE_ADD(should_execute_tya)
-SUITE_ADD(should_execute_txs)
-SUITE_ADD(should_execute_tsx)
-SUITE_ADD(should_execute_tay)
-SUITE_ADD(should_execute_clc)
-SUITE_ADD(should_execute_cld)
-SUITE_ADD(should_execute_cli)
-SUITE_ADD(should_execute_clv)
-SUITE_ADD(should_execute_sec)
-SUITE_ADD(should_execute_sed)
-SUITE_ADD(should_execute_sei)
+SUITE_BEGIN(cpu) {
+  SUITE_ADD(should_execute_lda_immediate);
+  SUITE_ADD(should_execute_ldx_immediate);
+  SUITE_ADD(should_execute_ldy_immediate);
+
+  SUITE_ADD(should_execute_sta_absolute);
+  SUITE_ADD(should_execute_stx_absolute);
+  SUITE_ADD(should_execute_sty_absolute);
+
+  SUITE_ADD(should_execute_tax);
+  SUITE_ADD(should_execute_txa);
+  SUITE_ADD(should_execute_tya);
+  SUITE_ADD(should_execute_txs);
+  SUITE_ADD(should_execute_tsx);
+  SUITE_ADD(should_execute_tay);
+
+  SUITE_ADD(should_execute_inc_zp);
+  SUITE_ADD(should_execute_inc_zp_x);
+  SUITE_ADD(should_execute_inc_absolute);
+  SUITE_ADD(should_execute_inc_absolute_x);
+  SUITE_ADD(should_execute_inx);
+  SUITE_ADD(should_execute_iny);
+  SUITE_ADD(should_execute_dec_zp);
+  SUITE_ADD(should_execute_dec_zp_x);
+  SUITE_ADD(should_execute_dec_absolute);
+  SUITE_ADD(should_execute_dec_absolute_x);
+  SUITE_ADD(should_execute_dex);
+  SUITE_ADD(should_execute_dey);
+
+  SUITE_ADD(should_execute_clc);
+  SUITE_ADD(should_execute_cld);
+  SUITE_ADD(should_execute_cli);
+  SUITE_ADD(should_execute_clv);
+  SUITE_ADD(should_execute_sec);
+  SUITE_ADD(should_execute_sed);
+  SUITE_ADD(should_execute_sei);
+}
 SUITE_END
