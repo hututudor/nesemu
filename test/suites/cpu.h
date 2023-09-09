@@ -4,10 +4,12 @@
 TEST_BEGIN(should_execute_lda_immediate) {
   cpu_t* cpu = mock_cpu();
 
-  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020, 0xA9);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDA_IMMEDIATE);
   cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x00);
 
-  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020, 0xA9);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_LDA_IMMEDIATE);
   cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC003 - 0x4020, 0xFF);
 
   cpu_execute(cpu);
@@ -25,10 +27,12 @@ TEST_END
 TEST_BEGIN(should_execute_ldx_immediate) {
   cpu_t* cpu = mock_cpu();
 
-  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020, 0xA2);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDX_IMMEDIATE);
   cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x00);
 
-  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020, 0xA2);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_LDX_IMMEDIATE);
   cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC003 - 0x4020, 0xFF);
 
   cpu_execute(cpu);
@@ -46,10 +50,12 @@ TEST_END
 TEST_BEGIN(should_execute_ldy_immediate) {
   cpu_t* cpu = mock_cpu();
 
-  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020, 0xA0);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDY_IMMEDIATE);
   cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x00);
 
-  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020, 0xA0);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_LDY_IMMEDIATE);
   cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC003 - 0x4020, 0xFF);
 
   cpu_execute(cpu);
@@ -67,7 +73,8 @@ TEST_END
 TEST_BEGIN(should_execute_clc) {
   cpu_t* cpu = mock_cpu();
 
-  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020, 0x18);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_CLC);
 
   cpu->status.c = 1;
 
@@ -80,7 +87,8 @@ TEST_END
 TEST_BEGIN(should_execute_cld) {
   cpu_t* cpu = mock_cpu();
 
-  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020, 0xD8);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_CLD);
 
   cpu->status.d = 1;
 
@@ -93,7 +101,8 @@ TEST_END
 TEST_BEGIN(should_execute_cli) {
   cpu_t* cpu = mock_cpu();
 
-  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020, 0x58);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_CLI);
 
   cpu->status.i = 1;
 
@@ -106,7 +115,8 @@ TEST_END
 TEST_BEGIN(should_execute_clv) {
   cpu_t* cpu = mock_cpu();
 
-  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020, 0xB8);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_CLV);
 
   cpu->status.v = 1;
 
@@ -119,7 +129,8 @@ TEST_END
 TEST_BEGIN(should_execute_sec) {
   cpu_t* cpu = mock_cpu();
 
-  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020, 0x38);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_SEC);
 
   cpu->status.c = 0;
 
@@ -132,7 +143,8 @@ TEST_END
 TEST_BEGIN(should_execute_sed) {
   cpu_t* cpu = mock_cpu();
 
-  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020, 0xF8);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_SED);
 
   cpu->status.d = 0;
 
@@ -145,7 +157,8 @@ TEST_END
 TEST_BEGIN(should_execute_sei) {
   cpu_t* cpu = mock_cpu();
 
-  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020, 0x78);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_SEI);
 
   cpu->status.i = 0;
 
