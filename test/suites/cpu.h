@@ -1,6 +1,63 @@
 #include "../framework.h"
 #include "../mocks/cpu.h"
 
+TEST_BEGIN(should_execute_sta_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDA_IMMEDIATE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x20);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_STA_ABSOLUTE);
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xC003 - 0x4020, 0x0002);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->a == 0x20);
+
+  cpu_execute(cpu);
+  ASSERT(bus_read8(cpu->bus, 0x0002) == 0x20);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_stx_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDX_IMMEDIATE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x20);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_STX_ABSOLUTE);
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xC003 - 0x4020, 0x0002);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->x == 0x20);
+
+  cpu_execute(cpu);
+  ASSERT(bus_read8(cpu->bus, 0x0002) == 0x20);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_sty_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LDY_IMMEDIATE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x20);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC002 - 0x4020,
+                               INSTRUCTION_STY_ABSOLUTE);
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xC003 - 0x4020, 0x0002);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->y == 0x20);
+
+  cpu_execute(cpu);
+  ASSERT(bus_read8(cpu->bus, 0x0002) == 0x20);
+}
+TEST_END
+
 TEST_BEGIN(should_execute_lda_immediate) {
   cpu_t* cpu = mock_cpu();
 
@@ -172,6 +229,9 @@ SUITE_BEGIN(cpu)
 SUITE_ADD(should_execute_lda_immediate)
 SUITE_ADD(should_execute_ldx_immediate)
 SUITE_ADD(should_execute_ldy_immediate)
+SUITE_ADD(should_execute_sta_absolute)
+SUITE_ADD(should_execute_stx_absolute)
+SUITE_ADD(should_execute_sty_absolute)
 SUITE_ADD(should_execute_clc)
 SUITE_ADD(should_execute_cld)
 SUITE_ADD(should_execute_cli)

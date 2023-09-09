@@ -25,41 +25,31 @@ void cpu_ldy(cpu_t* cpu, address_mode_t address_mode) {
   cpu_set_status_n(cpu, cpu->y);
 }
 
-void cpu_sta(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_sta(cpu_t* cpu, address_mode_t address_mode) {
+  bus_write8(cpu->bus, address_mode.address, cpu->a);
+}
 
-void cpu_stx(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_stx(cpu_t* cpu, address_mode_t address_mode) {
+  bus_write8(cpu->bus, address_mode.address, cpu->x);
+}
 
 void cpu_sty(cpu_t* cpu, address_mode_t address_mode) {
-  ASSERT_UNREACHABLE { ASSERT_UNREACHABLE; }
+  bus_write8(cpu->bus, address_mode.address, cpu->y);
 }
 
-void cpu_tax(cpu_t* cpu, address_mode_t address_mode) {
-  ASSERT_UNREACHABLE { ASSERT_UNREACHABLE; }
-}
+void cpu_tax(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
 
-void cpu_tay(cpu_t* cpu, address_mode_t address_mode) {
-  ASSERT_UNREACHABLE { ASSERT_UNREACHABLE; }
-}
+void cpu_tay(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
 
-void cpu_txa(cpu_t* cpu, address_mode_t address_mode) {
-  ASSERT_UNREACHABLE { ASSERT_UNREACHABLE; }
-}
+void cpu_txa(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
 
-void cpu_tya(cpu_t* cpu, address_mode_t address_mode) {
-  ASSERT_UNREACHABLE { ASSERT_UNREACHABLE; }
-}
+void cpu_tya(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
 
-void cpu_tsx(cpu_t* cpu, address_mode_t address_mode) {
-  ASSERT_UNREACHABLE { ASSERT_UNREACHABLE; }
-}
+void cpu_tsx(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
 
-void cpu_txs(cpu_t* cpu, address_mode_t address_mode) {
-  ASSERT_UNREACHABLE { ASSERT_UNREACHABLE; }
-}
+void cpu_txs(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
 
-void cpu_pha(cpu_t* cpu, address_mode_t address_mode) {
-  ASSERT_UNREACHABLE { ASSERT_UNREACHABLE; }
-}
+void cpu_pha(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
 
 void cpu_php(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 

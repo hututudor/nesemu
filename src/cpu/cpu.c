@@ -39,7 +39,11 @@ void cpu_execute(cpu_t* cpu) {
 
 u8 cpu_fetch8(cpu_t* cpu) { return bus_read8(cpu->bus, cpu->pc++); }
 
-u16 cpu_fetch16(cpu_t* cpu) { return bus_read16(cpu->bus, cpu->pc += 2); }
+u16 cpu_fetch16(cpu_t* cpu) {
+  u16 value = bus_read16(cpu->bus, cpu->pc);
+  cpu->pc += 2;
+  return value;
+}
 
 u16 cpu_fetch_nmi_vector(cpu_t* cpu) { return bus_read16(cpu->bus, 0xFFFA); }
 
