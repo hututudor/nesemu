@@ -1,5 +1,7 @@
 #include "instructions.h"
 
+#include <stdio.h>
+
 #include "../utils/assert.h"
 
 void cpu_lda(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
@@ -110,17 +112,17 @@ void cpu_bvc(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
 void cpu_bvs(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
-void cpu_clc(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_clc(cpu_t* cpu, address_mode_t address_mode) { cpu->status.c = 0; }
 
-void cpu_cld(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_cld(cpu_t* cpu, address_mode_t address_mode) { cpu->status.d = 0; }
 
-void cpu_cli(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_cli(cpu_t* cpu, address_mode_t address_mode) { cpu->status.i = 0; }
 
-void cpu_clv(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_clv(cpu_t* cpu, address_mode_t address_mode) { cpu->status.v = 0; }
 
-void cpu_sec(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_sec(cpu_t* cpu, address_mode_t address_mode) { cpu->status.c = 1; }
 
-void cpu_sed(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_sed(cpu_t* cpu, address_mode_t address_mode) { cpu->status.d = 1; }
 
 void cpu_sei(cpu_t* cpu, address_mode_t address_mode) { cpu->status.i = 1; }
 
