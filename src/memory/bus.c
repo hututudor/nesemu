@@ -52,6 +52,11 @@ u8 bus_read8(bus_t* bus, u16 address) {
 }
 
 void bus_write8(bus_t* bus, u16 address, u8 value) {
+  if (address >= 0x4020) {
+    bus->mapper->prg_write8(bus->mapper, address - 0x4020, value);
+    return;
+  }
+
   bus_address_t bus_address = parse_bus_address(bus, address);
   memory_write8(bus_address.memory, bus_address.address, value);
 }
@@ -66,6 +71,11 @@ u16 bus_read16(bus_t* bus, u16 address) {
 }
 
 void bus_write16(bus_t* bus, u16 address, u16 value) {
+  if (address >= 0x4020) {
+    bus->mapper->prg_write16(bus->mapper, address - 0x4020, value);
+    return;
+  }
+
   bus_address_t bus_address = parse_bus_address(bus, address);
   memory_write16(bus_address.memory, bus_address.address, value);
 }
