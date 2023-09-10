@@ -366,6 +366,51 @@ TEST_BEGIN(should_execute_plp_absolute) {
 }
 TEST_END
 
+TEST_BEGIN(should_execute_and_immediate) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_AND_IMMEDIATE);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x03);
+
+  cpu->a = 0x05;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->a == 0x01);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_eor_immediate) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_EOR_IMMEDIATE);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x03);
+
+  cpu->a = 0x05;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->a == 0x06);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_ora_immediate) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_ORA_IMMEDIATE);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x03);
+
+  cpu->a = 0x04;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->a == 0x07);
+}
+TEST_END
+
 TEST_BEGIN(should_execute_bit_absolute) {
   cpu_t* cpu = mock_cpu();
 
@@ -718,7 +763,7 @@ TEST_BEGIN(should_execute_rts_absolute) {
 }
 TEST_END
 
-TEST_BEGIN(should_execute_rol_absolute) {
+TEST_BEGIN(should_execute_rol_a_reg) {
   cpu_t* cpu = mock_cpu();
 
   cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
@@ -733,7 +778,7 @@ TEST_BEGIN(should_execute_rol_absolute) {
 }
 TEST_END
 
-TEST_BEGIN(should_execute_ror_absolute) {
+TEST_BEGIN(should_execute_ror_a_reg) {
   cpu_t* cpu = mock_cpu();
 
   cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
@@ -1018,6 +1063,10 @@ SUITE_BEGIN(cpu) {
   SUITE_ADD(should_execute_php_absolute);
   SUITE_ADD(should_execute_plp_absolute);
 
+  SUITE_ADD(should_execute_and_immediate);
+  SUITE_ADD(should_execute_eor_immediate);
+  SUITE_ADD(should_execute_ora_immediate);
+
   SUITE_ADD(should_execute_bit_absolute);
   SUITE_ADD(should_execute_cmp_absolute);
   SUITE_ADD(should_execute_cpx_absolute);
@@ -1036,8 +1085,8 @@ SUITE_BEGIN(cpu) {
   SUITE_ADD(should_execute_dex);
   SUITE_ADD(should_execute_dey);
 
-  SUITE_ADD(should_execute_rol_absolute);
-  SUITE_ADD(should_execute_ror_absolute);
+  SUITE_ADD(should_execute_rol_a_reg);
+  SUITE_ADD(should_execute_ror_a_reg);
 
   SUITE_ADD(should_execute_jsr_absolute);
   SUITE_ADD(should_execute_rts_absolute);

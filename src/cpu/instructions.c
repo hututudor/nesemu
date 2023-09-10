@@ -98,11 +98,26 @@ void cpu_plp(cpu_t* cpu, address_mode_t address_mode) {
   cpu_set_status(cpu, cpu_pop8(cpu));
 }
 
-void cpu_and(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_and(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->a = cpu->a & address_mode.value;
 
-void cpu_eor(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+  cpu_set_status_z(cpu, cpu->a);
+  cpu_set_status_n(cpu, cpu->a);
+}
 
-void cpu_ora(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_eor(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->a = cpu->a ^ address_mode.value;
+
+  cpu_set_status_z(cpu, cpu->a);
+  cpu_set_status_n(cpu, cpu->a);
+}
+
+void cpu_ora(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->a = cpu->a | address_mode.value;
+
+  cpu_set_status_z(cpu, cpu->a);
+  cpu_set_status_n(cpu, cpu->a);
+}
 
 void cpu_bit(cpu_t* cpu, address_mode_t address_mode) {
   u8 value = address_mode.value & cpu->a;

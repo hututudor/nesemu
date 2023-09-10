@@ -132,7 +132,7 @@ void load_instruction_table() {
 
   INSTRUCTION(0xEA, "NOP", cpu_nop, cpu_address_mode_implied, 1);
 
-  INSTRUCTION(0x09, "[#] ORA", cpu_ora, cpu_address_mode_implied, 2);
+  INSTRUCTION(0x09, "[#] ORA", cpu_ora, cpu_address_mode_immediate, 2);
   INSTRUCTION(0x05, "[ZP] ORA", cpu_ora, cpu_address_mode_zp, 2);
   INSTRUCTION(0x15, "[ZP, X] ORA", cpu_ora, cpu_address_mode_zp_x, 2);
   INSTRUCTION(0x0D, "[ABS] ORA", cpu_ora, cpu_address_mode_absolute, 3);
