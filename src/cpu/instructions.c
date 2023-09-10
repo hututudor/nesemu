@@ -342,6 +342,6 @@ void cpu_sei(cpu_t* cpu, address_mode_t address_mode) { cpu->status.i = 1; }
 
 void cpu_brk(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
-void cpu_nop(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_nop(cpu_t* cpu, address_mode_t address_mode) {}
 
 void cpu_rti(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }

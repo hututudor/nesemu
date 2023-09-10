@@ -1039,6 +1039,17 @@ TEST_BEGIN(should_execute_sei) {
 }
 TEST_END
 
+TEST_BEGIN(should_execute_nop) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_NOP);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC001);
+}
+TEST_END
+
 SUITE_BEGIN(cpu) {
   SUITE_ADD(should_execute_lda_immediate);
   SUITE_ADD(should_execute_ldx_immediate);
@@ -1108,5 +1119,7 @@ SUITE_BEGIN(cpu) {
   SUITE_ADD(should_execute_sec);
   SUITE_ADD(should_execute_sed);
   SUITE_ADD(should_execute_sei);
+
+  SUITE_ADD(should_execute_nop);
 }
 SUITE_END
