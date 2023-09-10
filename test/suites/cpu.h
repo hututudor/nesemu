@@ -1080,6 +1080,37 @@ TEST_BEGIN(should_execute_nop) {
 }
 TEST_END
 
+TEST_BEGIN(should_execute_brk) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xFFFE - 0x4020, 0xD000);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_BRK);
+
+  cpu->sp = 0xFF;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xD000);
+  ASSERT(cpu->sp == 0xFC);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_rti) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write16(cpu->bus, 0x01FE, 0xD000);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_RTI);
+
+  cpu->sp = 0xFC;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xD000);
+}
+TEST_END
+
 SUITE_BEGIN(cpu) {
   SUITE_ADD(should_execute_lda_immediate);
   SUITE_ADD(should_execute_ldx_immediate);
@@ -1154,5 +1185,7 @@ SUITE_BEGIN(cpu) {
   SUITE_ADD(should_execute_sei);
 
   SUITE_ADD(should_execute_nop);
+  SUITE_ADD(should_execute_brk);
+  SUITE_ADD(should_execute_rti);
 }
 SUITE_END

@@ -364,8 +364,16 @@ void cpu_sed(cpu_t* cpu, address_mode_t address_mode) { cpu->status.d = 1; }
 
 void cpu_sei(cpu_t* cpu, address_mode_t address_mode) { cpu->status.i = 1; }
 
-void cpu_brk(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_brk(cpu_t* cpu, address_mode_t address_mode) {
+  cpu_push16(cpu, cpu->pc);
+  cpu_push8(cpu, cpu_get_status(cpu));
+
+  cpu->pc = cpu_fetch_irq_vector(cpu);
+}
 
 void cpu_nop(cpu_t* cpu, address_mode_t address_mode) {}
 
-void cpu_rti(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_rti(cpu_t* cpu, address_mode_t address_mode) {
+  cpu_set_status(cpu, cpu_pop8(cpu));
+  cpu->pc = cpu_pop16(cpu);
+}
