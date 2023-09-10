@@ -13,7 +13,12 @@ address_mode_t cpu_address_mode_immediate(cpu_t* cpu) {
   return address_mode;
 }
 
-address_mode_t cpu_address_mode_a(cpu_t* cpu) { ASSERT_UNREACHABLE; }
+address_mode_t cpu_address_mode_a(cpu_t* cpu) {
+  address_mode_t address_mode = {0};
+  address_mode.is_a_register = true;
+  address_mode.value = cpu->a;
+  return address_mode;
+}
 
 address_mode_t cpu_address_mode_zp(cpu_t* cpu) {
   address_mode_t address_mode = {0};

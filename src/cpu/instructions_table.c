@@ -146,13 +146,13 @@ void load_instruction_table() {
   INSTRUCTION(0x68, "PLA", cpu_pla, cpu_address_mode_implied, 1);
   INSTRUCTION(0x28, "PLP", cpu_plp, cpu_address_mode_implied, 1);
 
-  INSTRUCTION(0x2A, "[A] ROL", cpu_rol, cpu_address_mode_a, 2);
+  INSTRUCTION(0x2A, "[A] ROL", cpu_rol, cpu_address_mode_a, 1);
   INSTRUCTION(0x26, "[ZP] ROL", cpu_rol, cpu_address_mode_zp, 2);
   INSTRUCTION(0x36, "[ZP, X] ROL", cpu_rol, cpu_address_mode_zp_x, 2);
   INSTRUCTION(0x2E, "[ABS] ROL", cpu_rol, cpu_address_mode_absolute, 3);
   INSTRUCTION(0x3E, "[ABS, X] ROL", cpu_rol, cpu_address_mode_absolute_x, 3);
 
-  INSTRUCTION(0x6A, "[A] ROR", cpu_ror, cpu_address_mode_a, 2);
+  INSTRUCTION(0x6A, "[A] ROR", cpu_ror, cpu_address_mode_a, 1);
   INSTRUCTION(0x66, "[ZP] ROR", cpu_ror, cpu_address_mode_zp, 2);
   INSTRUCTION(0x76, "[ZP, X] ROR", cpu_ror, cpu_address_mode_zp_x, 2);
   INSTRUCTION(0x6E, "[ABS] ROR", cpu_ror, cpu_address_mode_absolute, 3);

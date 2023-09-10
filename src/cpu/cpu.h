@@ -28,6 +28,7 @@ typedef struct {
 typedef struct {
   u8 value;
   u16 address;
+  bool is_a_register;
 } address_mode_t;
 
 typedef address_mode_t (*parse_address_mode_t)(cpu_t* cpu);

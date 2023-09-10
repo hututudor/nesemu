@@ -206,9 +206,33 @@ void cpu_asl(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
 void cpu_lsr(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
-void cpu_rol(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_rol(cpu_t* cpu, address_mode_t address_mode) {
+  u8 value = (address_mode.value << 1) | cpu->status.c;
+  cpu->status.c = (address_mode.value >> 7) & 1;
 
-void cpu_ror(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+  if (address_mode.is_a_register) {
+    cpu->a = value;
+  } else {
+    bus_write8(cpu->bus, address_mode.address, value);
+  }
+
+  cpu_set_status_z(cpu, value);
+  cpu_set_status_n(cpu, value);
+}
+
+void cpu_ror(cpu_t* cpu, address_mode_t address_mode) {
+  u8 value = (address_mode.value >> 1) | (cpu->status.c << 7);
+  cpu->status.c = address_mode.value & 1;
+
+  if (address_mode.is_a_register) {
+    cpu->a = value;
+  } else {
+    bus_write8(cpu->bus, address_mode.address, value);
+  }
+
+  cpu_set_status_z(cpu, value);
+  cpu_set_status_n(cpu, value);
+}
 
 void cpu_jmp(cpu_t* cpu, address_mode_t address_mode) {
   cpu->pc = address_mode.address;
