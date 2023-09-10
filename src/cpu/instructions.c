@@ -168,7 +168,9 @@ void cpu_jsr(cpu_t* cpu, address_mode_t address_mode) {
   cpu->pc = address_mode.address;
 }
 
-void cpu_rts(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_rts(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->pc = cpu_pop16(cpu) + 1;
+}
 
 void cpu_bcc(cpu_t* cpu, address_mode_t address_mode) {
   if (cpu->status.c) {

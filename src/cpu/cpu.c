@@ -56,6 +56,12 @@ void cpu_push16(cpu_t* cpu, u16 value) {
   bus_write8(cpu->bus, cpu->sp--, value & 0xFF);
 }
 
+u16 cpu_pop16(cpu_t* cpu) {
+  u16 value = bus_read16(cpu->bus, cpu->sp + 1);
+  cpu->sp += 2;
+  return value;
+}
+
 void cpu_set_status_z(cpu_t* cpu, u8 value) { cpu->status.z = value == 0; }
 
 void cpu_set_status_n(cpu_t* cpu, u8 value) {

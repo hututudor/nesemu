@@ -41,6 +41,8 @@ int main(int argv, char** argc) {
 
   nes_t* nes = nes_create(rom);
 
+  bus_write8(nes->bus, 0x2002, 0xFF);
+
   while (true) {
     cpu_debug_print_state(nes->cpu);
     printf("\n");

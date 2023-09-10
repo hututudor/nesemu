@@ -53,6 +53,7 @@ u16 cpu_fetch_irq_vector(cpu_t* cpu);
 u16 cpu_fetch_reset_vector(cpu_t* cpu);
 
 void cpu_push16(cpu_t* cpu, u16 value);
+u16 cpu_pop16(cpu_t* cpu);
 
 void cpu_set_status_z(cpu_t* cpu, u8 value);
 void cpu_set_status_n(cpu_t* cpu, u8 value);
