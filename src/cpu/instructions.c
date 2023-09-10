@@ -101,9 +101,31 @@ void cpu_bit(cpu_t* cpu, address_mode_t address_mode) {
   cpu->status.n = (address_mode.value >> 7) & 1;
 }
 
-void cpu_adc(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_adc(cpu_t* cpu, address_mode_t address_mode) {
+  u8 previous_a = cpu->a;
+  u8 previous_result = address_mode.value + cpu->status.c;
 
-void cpu_sbc(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+  u16 result = previous_a + previous_result;
+  cpu->a = result;
+
+  cpu_set_status_c(cpu, result);
+  cpu_set_status_z(cpu, cpu->a);
+  cpu_set_status_v(cpu, cpu->a, previous_a, previous_result);
+  cpu_set_status_n(cpu, cpu->a);
+}
+
+void cpu_sbc(cpu_t* cpu, address_mode_t address_mode) {
+  u8 previous_a = cpu->a;
+  u8 previous_result = address_mode.value + (1 - cpu->status.c);
+
+  u16 result = previous_a - previous_result;
+  cpu->a = result;
+
+  cpu_set_status_c(cpu, result);
+  cpu_set_status_z(cpu, cpu->a);
+  cpu_set_status_v(cpu, cpu->a, previous_a, -previous_result);
+  cpu_set_status_n(cpu, cpu->a);
+}
 
 void cpu_cmp(cpu_t* cpu, address_mode_t address_mode) {
   cpu->status.c = cpu->a >= address_mode.value;

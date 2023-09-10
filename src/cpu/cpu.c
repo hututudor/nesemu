@@ -62,7 +62,17 @@ u16 cpu_pop16(cpu_t* cpu) {
   return value;
 }
 
+void cpu_set_status_c(cpu_t* cpu, u16 value) { cpu->status.c = value > 0xFF; }
+
 void cpu_set_status_z(cpu_t* cpu, u8 value) { cpu->status.z = value == 0; }
+
+void cpu_set_status_v(cpu_t* cpu, u8 result, u8 a, u8 b) {
+  u8 aSign = (a & 0x80) >> 7;
+  u8 bSign = (b & 0x80) >> 7;
+  u8 resultSign = (result & 0x80) >> 7;
+
+  cpu->status.v = (resultSign != aSign) && (resultSign != bSign);
+}
 
 void cpu_set_status_n(cpu_t* cpu, u8 value) {
   cpu->status.n = (value >> 7) & 1;

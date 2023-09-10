@@ -127,6 +127,44 @@ TEST_BEGIN(should_execute_ldy_immediate) {
 }
 TEST_END
 
+TEST_BEGIN(should_execute_adc_immediate) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_ADC_IMMEDIATE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x05);
+
+  cpu->a = 0x02;
+  cpu->status.c = 1;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->a = 0x08);
+  ASSERT(cpu->status.c == 0);
+  ASSERT(cpu->status.n == 0);
+  ASSERT(cpu->status.z == 0);
+  ASSERT(cpu->status.v == 0);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_sbc_immediate) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_SBC_IMMEDIATE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0x04);
+
+  cpu->a = 0x05;
+  cpu->status.c = 0;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->a == 0x00);
+  ASSERT(cpu->status.c == 0);
+  ASSERT(cpu->status.n == 0);
+  ASSERT(cpu->status.z == 1);
+  ASSERT(cpu->status.v == 0);
+}
+TEST_END
+
 TEST_BEGIN(should_execute_tax) {
   cpu_t* cpu = mock_cpu();
 
@@ -868,6 +906,9 @@ SUITE_BEGIN(cpu) {
   SUITE_ADD(should_execute_sta_absolute);
   SUITE_ADD(should_execute_stx_absolute);
   SUITE_ADD(should_execute_sty_absolute);
+
+  SUITE_ADD(should_execute_adc_immediate);
+  SUITE_ADD(should_execute_sbc_immediate);
 
   SUITE_ADD(should_execute_tax);
   SUITE_ADD(should_execute_txa);
