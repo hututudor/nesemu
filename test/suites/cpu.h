@@ -262,6 +262,86 @@ TEST_BEGIN(should_execute_tsx) {
 }
 TEST_END
 
+TEST_BEGIN(should_execute_bit_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x1212, 0xD0);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0x1212, 0xD0);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_BIT_ABSOLUTE);
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xC001 - 0x4020, 0x1212);
+
+  cpu->a = 0x00;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->status.z == 1);
+  ASSERT(cpu->status.v == 1);
+  ASSERT(cpu->status.n == 1);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_cmp_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x1212, 0xD0);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0x1212, 0xD0);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_CMP_ABSOLUTE);
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xC001 - 0x4020, 0x1212);
+
+  cpu->a = 0xC0;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->status.c == 0);
+  ASSERT(cpu->status.z == 0);
+  ASSERT(cpu->status.n == 1);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_cpx_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x1212, 0xD0);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0x1212, 0xD0);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_CPX_ABSOLUTE);
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xC001 - 0x4020, 0x1212);
+
+  cpu->x = 0xD0;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->status.c == 1);
+  ASSERT(cpu->status.z == 1);
+  ASSERT(cpu->status.n == 0);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_cpy_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x1212, 0xD0);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0x1212, 0xD0);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_CPY_ABSOLUTE);
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xC001 - 0x4020, 0x1212);
+
+  cpu->y = 0xE0;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->status.c == 1);
+  ASSERT(cpu->status.z == 0);
+  ASSERT(cpu->status.n == 0);
+}
+TEST_END
+
 TEST_BEGIN(should_execute_inc_zp) {
   cpu_t* cpu = mock_cpu();
 
@@ -795,6 +875,11 @@ SUITE_BEGIN(cpu) {
   SUITE_ADD(should_execute_txs);
   SUITE_ADD(should_execute_tsx);
   SUITE_ADD(should_execute_tay);
+
+  SUITE_ADD(should_execute_bit_absolute);
+  SUITE_ADD(should_execute_cmp_absolute);
+  SUITE_ADD(should_execute_cpx_absolute);
+  SUITE_ADD(should_execute_cpy_absolute);
 
   SUITE_ADD(should_execute_inc_zp);
   SUITE_ADD(should_execute_inc_zp_x);

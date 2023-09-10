@@ -93,17 +93,35 @@ void cpu_eor(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
 void cpu_ora(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
-void cpu_bit(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_bit(cpu_t* cpu, address_mode_t address_mode) {
+  u8 value = address_mode.value & cpu->a;
+
+  cpu->status.z = value == 0;
+  cpu->status.v = (address_mode.value >> 6) & 1;
+  cpu->status.n = (address_mode.value >> 7) & 1;
+}
 
 void cpu_adc(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
 void cpu_sbc(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
-void cpu_cmp(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_cmp(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->status.c = cpu->a >= address_mode.value;
+  cpu->status.z = cpu->a == address_mode.value;
+  cpu->status.n = (cpu->a - address_mode.value) >> 7;
+}
 
-void cpu_cpx(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_cpx(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->status.c = cpu->x >= address_mode.value;
+  cpu->status.z = cpu->x == address_mode.value;
+  cpu->status.n = (cpu->x - address_mode.value) >> 7;
+}
 
-void cpu_cpy(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_cpy(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->status.c = cpu->y >= address_mode.value;
+  cpu->status.z = cpu->y == address_mode.value;
+  cpu->status.n = (cpu->y - address_mode.value) >> 7;
+}
 
 void cpu_inc(cpu_t* cpu, address_mode_t address_mode) {
   u8 value = address_mode.value + 1;
