@@ -527,6 +527,142 @@ TEST_BEGIN(should_execute_jmp_absolute) {
 }
 TEST_END
 
+TEST_BEGIN(should_execute_bcc_relative) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_BCC_RELATIVE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0xFE);
+
+  cpu->status.c = 0;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC000);
+
+  cpu->status.c = 1;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC002);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_bcs_relative) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_BCS_RELATIVE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0xFE);
+
+  cpu->status.c = 1;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC000);
+
+  cpu->status.c = 0;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC002);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_beq_relative) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_BEQ_RELATIVE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0xFE);
+
+  cpu->status.z = 1;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC000);
+
+  cpu->status.z = 0;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC002);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_bne_relative) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_BNE_RELATIVE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0xFE);
+
+  cpu->status.z = 0;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC000);
+
+  cpu->status.z = 1;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC002);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_bmi_relative) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_BMI_RELATIVE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0xFE);
+
+  cpu->status.n = 1;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC000);
+
+  cpu->status.n = 0;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC002);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_bpl_relative) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_BPL_RELATIVE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0xFE);
+
+  cpu->status.n = 0;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC000);
+
+  cpu->status.n = 1;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC002);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_bvc_relative) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_BVC_RELATIVE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0xFE);
+
+  cpu->status.v = 0;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC000);
+
+  cpu->status.v = 1;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC002);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_bvs_relative) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_BVS_RELATIVE);
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC001 - 0x4020, 0xFE);
+
+  cpu->status.v = 1;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC000);
+
+  cpu->status.v = 0;
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC002);
+}
+TEST_END
+
 TEST_BEGIN(should_execute_clc) {
   cpu_t* cpu = mock_cpu();
 
@@ -656,6 +792,15 @@ SUITE_BEGIN(cpu) {
 
   SUITE_ADD(should_execute_jsr_absolute);
   SUITE_ADD(should_execute_jmp_absolute);
+
+  SUITE_ADD(should_execute_bcc_relative);
+  SUITE_ADD(should_execute_bcs_relative);
+  SUITE_ADD(should_execute_beq_relative);
+  SUITE_ADD(should_execute_bne_relative);
+  SUITE_ADD(should_execute_bmi_relative);
+  SUITE_ADD(should_execute_bpl_relative);
+  SUITE_ADD(should_execute_bvc_relative);
+  SUITE_ADD(should_execute_bvs_relative);
 
   SUITE_ADD(should_execute_clc);
   SUITE_ADD(should_execute_cld);

@@ -170,21 +170,69 @@ void cpu_jsr(cpu_t* cpu, address_mode_t address_mode) {
 
 void cpu_rts(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
-void cpu_bcc(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_bcc(cpu_t* cpu, address_mode_t address_mode) {
+  if (cpu->status.c) {
+    return;
+  }
 
-void cpu_bcs(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+  cpu->pc = address_mode.address;
+}
 
-void cpu_beq(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_bcs(cpu_t* cpu, address_mode_t address_mode) {
+  if (!cpu->status.c) {
+    return;
+  }
 
-void cpu_bmi(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+  cpu->pc = address_mode.address;
+}
 
-void cpu_bne(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_beq(cpu_t* cpu, address_mode_t address_mode) {
+  if (!cpu->status.z) {
+    return;
+  }
 
-void cpu_bpl(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+  cpu->pc = address_mode.address;
+}
 
-void cpu_bvc(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_bmi(cpu_t* cpu, address_mode_t address_mode) {
+  if (!cpu->status.n) {
+    return;
+  }
 
-void cpu_bvs(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+  cpu->pc = address_mode.address;
+}
+
+void cpu_bne(cpu_t* cpu, address_mode_t address_mode) {
+  if (cpu->status.z) {
+    return;
+  }
+
+  cpu->pc = address_mode.address;
+}
+
+void cpu_bpl(cpu_t* cpu, address_mode_t address_mode) {
+  if (cpu->status.n) {
+    return;
+  }
+
+  cpu->pc = address_mode.address;
+}
+
+void cpu_bvc(cpu_t* cpu, address_mode_t address_mode) {
+  if (cpu->status.v) {
+    return;
+  }
+
+  cpu->pc = address_mode.address;
+}
+
+void cpu_bvs(cpu_t* cpu, address_mode_t address_mode) {
+  if (!cpu->status.v) {
+    return;
+  }
+
+  cpu->pc = address_mode.address;
+}
 
 void cpu_clc(cpu_t* cpu, address_mode_t address_mode) { cpu->status.c = 0; }
 
