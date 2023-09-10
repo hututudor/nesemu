@@ -778,6 +778,36 @@ TEST_BEGIN(should_execute_rol_a_reg) {
 }
 TEST_END
 
+TEST_BEGIN(should_execute_asl_a_reg) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_ASL_A_REG);
+
+  cpu->a = 0xF0;
+  cpu->status.c = 0;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->a == 0xE0);
+  ASSERT(cpu->status.c == 1);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_lsr_a_reg) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_LSR_A_REG);
+
+  cpu->a = 0x03;
+  cpu->status.c = 0;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->a == 0x01);
+  ASSERT(cpu->status.c == 1);
+}
+TEST_END
+
 TEST_BEGIN(should_execute_ror_a_reg) {
   cpu_t* cpu = mock_cpu();
 
@@ -1095,6 +1125,9 @@ SUITE_BEGIN(cpu) {
   SUITE_ADD(should_execute_dec_absolute_x);
   SUITE_ADD(should_execute_dex);
   SUITE_ADD(should_execute_dey);
+
+  SUITE_ADD(should_execute_asl_a_reg);
+  SUITE_ADD(should_execute_lsr_a_reg);
 
   SUITE_ADD(should_execute_rol_a_reg);
   SUITE_ADD(should_execute_ror_a_reg);

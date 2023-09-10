@@ -217,9 +217,33 @@ void cpu_dey(cpu_t* cpu, address_mode_t address_mode) {
   cpu_set_status_n(cpu, cpu->y);
 }
 
-void cpu_asl(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_asl(cpu_t* cpu, address_mode_t address_mode) {
+  u8 value = address_mode.value << 1;
+  cpu->status.c = (value >> 7) & 1;
 
-void cpu_lsr(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+  if (address_mode.is_a_register) {
+    cpu->a = value;
+  } else {
+    bus_write8(cpu->bus, address_mode.address, value);
+  }
+
+  cpu_set_status_z(cpu, value);
+  cpu_set_status_n(cpu, value);
+}
+
+void cpu_lsr(cpu_t* cpu, address_mode_t address_mode) {
+  u8 value = address_mode.value >> 1;
+  cpu->status.c = value & 1;
+
+  if (address_mode.is_a_register) {
+    cpu->a = value;
+  } else {
+    bus_write8(cpu->bus, address_mode.address, value);
+  }
+
+  cpu_set_status_z(cpu, value);
+  cpu_set_status_n(cpu, value);
+}
 
 void cpu_rol(cpu_t* cpu, address_mode_t address_mode) {
   u8 value = (address_mode.value << 1) | cpu->status.c;
