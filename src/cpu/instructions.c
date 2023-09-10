@@ -79,13 +79,24 @@ void cpu_txs(cpu_t* cpu, address_mode_t address_mode) {
   cpu_set_status_n(cpu, cpu->sp);
 }
 
-void cpu_pha(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE }
+void cpu_pha(cpu_t* cpu, address_mode_t address_mode) {
+  cpu_push8(cpu, cpu->a);
+}
 
-void cpu_php(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_php(cpu_t* cpu, address_mode_t address_mode) {
+  cpu_push8(cpu, cpu_get_status(cpu));
+}
 
-void cpu_pla(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_pla(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->a = cpu_pop8(cpu);
 
-void cpu_plp(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+  cpu_set_status_z(cpu, cpu->a);
+  cpu_set_status_n(cpu, cpu->a);
+}
+
+void cpu_plp(cpu_t* cpu, address_mode_t address_mode) {
+  cpu_set_status(cpu, cpu_pop8(cpu));
+}
 
 void cpu_and(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 

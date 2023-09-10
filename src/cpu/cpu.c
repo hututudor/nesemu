@@ -51,13 +51,19 @@ u16 cpu_fetch_irq_vector(cpu_t* cpu) { return bus_read16(cpu->bus, 0xFFFE); }
 
 u16 cpu_fetch_reset_vector(cpu_t* cpu) { return bus_read16(cpu->bus, 0xFFFC); }
 
+void cpu_push8(cpu_t* cpu, u8 value) {
+  bus_write8(cpu->bus, 0x0100 + cpu->sp--, value);
+}
+
+u8 cpu_pop8(cpu_t* cpu) { return bus_read8(cpu->bus, 0x0100 + (++cpu->sp)); }
+
 void cpu_push16(cpu_t* cpu, u16 value) {
-  bus_write8(cpu->bus, cpu->sp--, (value >> 8) & 0xFF);
-  bus_write8(cpu->bus, cpu->sp--, value & 0xFF);
+  bus_write8(cpu->bus, 0x0100 + cpu->sp--, (value >> 8) & 0xFF);
+  bus_write8(cpu->bus, 0x0100 + cpu->sp--, value & 0xFF);
 }
 
 u16 cpu_pop16(cpu_t* cpu) {
-  u16 value = bus_read16(cpu->bus, cpu->sp + 1);
+  u16 value = bus_read16(cpu->bus, 0x0100 + cpu->sp + 1);
   cpu->sp += 2;
   return value;
 }
@@ -72,6 +78,30 @@ void cpu_set_status_v(cpu_t* cpu, u8 result, u8 a, u8 b) {
   u8 resultSign = (result & 0x80) >> 7;
 
   cpu->status.v = (resultSign != aSign) && (resultSign != bSign);
+}
+
+u8 cpu_get_status(cpu_t* cpu) {
+  u8 res = 0;
+
+  res = (res << 1) + cpu->status.n;
+  res = (res << 1) + cpu->status.v;
+  res = (res << 1) + 1;
+  res = (res << 1) + 1;
+  res = (res << 1) + cpu->status.d;
+  res = (res << 1) + cpu->status.i;
+  res = (res << 1) + cpu->status.z;
+  res = (res << 1) + cpu->status.c;
+
+  return res;
+}
+
+void cpu_set_status(cpu_t* cpu, u8 status) {
+  cpu->status.c = (status >> 0) & 1;
+  cpu->status.z = (status >> 1) & 1;
+  cpu->status.i = (status >> 2) & 1;
+  cpu->status.d = (status >> 3) & 1;
+  cpu->status.v = (status >> 6) & 1;
+  cpu->status.n = (status >> 7) & 1;
 }
 
 void cpu_set_status_n(cpu_t* cpu, u8 value) {

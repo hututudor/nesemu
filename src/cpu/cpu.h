@@ -52,6 +52,9 @@ u16 cpu_fetch_nmi_vector(cpu_t* cpu);
 u16 cpu_fetch_irq_vector(cpu_t* cpu);
 u16 cpu_fetch_reset_vector(cpu_t* cpu);
 
+void cpu_push8(cpu_t* cpu, u8 value);
+u8 cpu_pop8(cpu_t* cpu);
+
 void cpu_push16(cpu_t* cpu, u16 value);
 u16 cpu_pop16(cpu_t* cpu);
 
@@ -59,5 +62,8 @@ void cpu_set_status_c(cpu_t* cpu, u16 value);
 void cpu_set_status_z(cpu_t* cpu, u8 value);
 void cpu_set_status_v(cpu_t* cpu, u8 result, u8 a, u8 b);
 void cpu_set_status_n(cpu_t* cpu, u8 value);
+
+u8 cpu_get_status(cpu_t* cpu);
+void cpu_set_status(cpu_t* cpu, u8 status);
 
 void cpu_debug_print_state(cpu_t* cpu);

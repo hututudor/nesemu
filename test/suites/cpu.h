@@ -300,6 +300,72 @@ TEST_BEGIN(should_execute_tsx) {
 }
 TEST_END
 
+TEST_BEGIN(should_execute_pha_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_PHA);
+
+  cpu->a = 0x20;
+  cpu->sp = 0xFF;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->sp == 0xFE);
+  ASSERT(bus_read8(cpu->bus, 0x01FF) == 0x20);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_pla_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x01FF, 0x20);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_PLA);
+
+  cpu->sp = 0xFE;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->sp == 0xFF);
+  ASSERT(cpu->a == 0x20);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_php_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_PHP);
+
+  cpu->sp = 0xFF;
+  cpu->status.c = 1;
+  cpu->status.v = 1;
+  cpu->status.n = 1;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->sp == 0xFE);
+  ASSERT(bus_read8(cpu->bus, 0x01FF) == 0b11110101);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_plp_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  bus_write8(cpu->bus, 0x01FF, 0b11110101);
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_PLP);
+
+  cpu->sp = 0xFE;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->sp == 0xFF);
+  ASSERT(cpu->status.c == 1);
+  ASSERT(cpu->status.v == 1);
+  ASSERT(cpu->status.n == 1);
+}
+TEST_END
+
 TEST_BEGIN(should_execute_bit_absolute) {
   cpu_t* cpu = mock_cpu();
 
@@ -628,8 +694,8 @@ TEST_BEGIN(should_execute_jsr_absolute) {
   cpu_execute(cpu);
   ASSERT(cpu->pc == 0xC008);
   ASSERT(cpu->sp == 0xFD);
-  ASSERT(bus_read8(cpu->bus, 0x00FF) == 0xC0);
-  ASSERT(bus_read8(cpu->bus, 0x00FE) == 0x02);
+  ASSERT(bus_read8(cpu->bus, 0x01FF) == 0xC0);
+  ASSERT(bus_read8(cpu->bus, 0x01FE) == 0x02);
 }
 TEST_END
 
@@ -916,6 +982,11 @@ SUITE_BEGIN(cpu) {
   SUITE_ADD(should_execute_txs);
   SUITE_ADD(should_execute_tsx);
   SUITE_ADD(should_execute_tay);
+
+  SUITE_ADD(should_execute_pha_absolute);
+  SUITE_ADD(should_execute_pla_absolute);
+  SUITE_ADD(should_execute_php_absolute);
+  SUITE_ADD(should_execute_plp_absolute);
 
   SUITE_ADD(should_execute_bit_absolute);
   SUITE_ADD(should_execute_cmp_absolute);
