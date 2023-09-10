@@ -498,6 +498,35 @@ TEST_BEGIN(should_execute_dey) {
 }
 TEST_END
 
+TEST_BEGIN(should_execute_jsr_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_JSR_ABSOLUTE);
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xC001 - 0x4020, 0xC008);
+
+  cpu->sp = 0xFF;
+
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC008);
+  ASSERT(cpu->sp == 0xFD);
+  ASSERT(bus_read8(cpu->bus, 0x00FF) == 0xC0);
+  ASSERT(bus_read8(cpu->bus, 0x00FE) == 0x02);
+}
+TEST_END
+
+TEST_BEGIN(should_execute_jmp_absolute) {
+  cpu_t* cpu = mock_cpu();
+
+  cpu->bus->mapper->prg_write8(cpu->bus->mapper, 0xC000 - 0x4020,
+                               INSTRUCTION_JMP_ABSOLUTE);
+  cpu->bus->mapper->prg_write16(cpu->bus->mapper, 0xC001 - 0x4020, 0xC008);
+
+  cpu_execute(cpu);
+  ASSERT(cpu->pc == 0xC008);
+}
+TEST_END
+
 TEST_BEGIN(should_execute_clc) {
   cpu_t* cpu = mock_cpu();
 
@@ -624,6 +653,9 @@ SUITE_BEGIN(cpu) {
   SUITE_ADD(should_execute_dec_absolute_x);
   SUITE_ADD(should_execute_dex);
   SUITE_ADD(should_execute_dey);
+
+  SUITE_ADD(should_execute_jsr_absolute);
+  SUITE_ADD(should_execute_jmp_absolute);
 
   SUITE_ADD(should_execute_clc);
   SUITE_ADD(should_execute_cld);

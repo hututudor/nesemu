@@ -159,9 +159,14 @@ void cpu_rol(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
 void cpu_ror(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 
-void cpu_jmp(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_jmp(cpu_t* cpu, address_mode_t address_mode) {
+  cpu->pc = address_mode.address;
+}
 
-void cpu_jsr(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
+void cpu_jsr(cpu_t* cpu, address_mode_t address_mode) {
+  cpu_push16(cpu, cpu->pc - 1);
+  cpu->pc = address_mode.address;
+}
 
 void cpu_rts(cpu_t* cpu, address_mode_t address_mode) { ASSERT_UNREACHABLE; }
 

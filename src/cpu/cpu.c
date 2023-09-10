@@ -51,6 +51,11 @@ u16 cpu_fetch_irq_vector(cpu_t* cpu) { return bus_read16(cpu->bus, 0xFFFE); }
 
 u16 cpu_fetch_reset_vector(cpu_t* cpu) { return bus_read16(cpu->bus, 0xFFFC); }
 
+void cpu_push16(cpu_t* cpu, u16 value) {
+  bus_write8(cpu->bus, cpu->sp--, (value >> 8) & 0xFF);
+  bus_write8(cpu->bus, cpu->sp--, value & 0xFF);
+}
+
 void cpu_set_status_z(cpu_t* cpu, u8 value) { cpu->status.z = value == 0; }
 
 void cpu_set_status_n(cpu_t* cpu, u8 value) {
