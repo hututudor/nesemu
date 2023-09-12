@@ -73,7 +73,14 @@ address_mode_t cpu_address_mode_absolute_y(cpu_t* cpu) {
 address_mode_t cpu_address_mode_indirect(cpu_t* cpu) {
   address_mode_t address_mode = {0};
   u16 address = cpu_fetch16(cpu);
-  address_mode.address = bus_read16(cpu->bus, address);
+
+  if ((address & 0xFF) == 0xFF) {
+    address_mode.address = (bus_read8(cpu->bus, address & 0xFF00) << 8) |
+                           bus_read8(cpu->bus, address);
+  } else {
+    address_mode.address = bus_read16(cpu->bus, address);
+  }
+
   address_mode.value = bus_read8(cpu->bus, address_mode.address);
   return address_mode;
 }
