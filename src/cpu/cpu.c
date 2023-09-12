@@ -1,5 +1,6 @@
 #include "cpu.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "instructions_table.h"
@@ -11,6 +12,7 @@ cpu_t* cpu_create(bus_t* bus) {
   cpu->bus = bus;
 
   cpu->pc = cpu_fetch_reset_vector(cpu);
+  cpu->sp = 0xFD;
 
   cpu->status.i = 1;
 
@@ -32,6 +34,12 @@ void cpu_destroy(cpu_t* cpu) {
 void cpu_execute(cpu_t* cpu) {
   u8 opcode = cpu_fetch8(cpu);
   instruction_t instruction = instructions_table[opcode];
+
+  if (!instruction.execute) {
+    printf("[CPU] ILLEGAL INSTRUCTION REACHED: %02X\n", opcode);
+
+    exit(0);
+  }
 
   address_mode_t address_mode = instruction.parse_address_mode(cpu);
   instruction.execute(cpu, address_mode);
@@ -86,7 +94,7 @@ u8 cpu_get_status(cpu_t* cpu) {
   res = (res << 1) + cpu->status.n;
   res = (res << 1) + cpu->status.v;
   res = (res << 1) + 1;
-  res = (res << 1) + 1;
+  res = (res << 1) + 0;
   res = (res << 1) + cpu->status.d;
   res = (res << 1) + cpu->status.i;
   res = (res << 1) + cpu->status.z;

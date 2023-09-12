@@ -68,3 +68,4 @@ u8 cpu_get_status(cpu_t* cpu);
 void cpu_set_status(cpu_t* cpu, u8 status);
 
 void cpu_debug_print_state(cpu_t* cpu);
+void cpu_debug_print_log(cpu_t* cpu);
