@@ -10,6 +10,9 @@ nes_t* nes_create(rom_t* rom) {
   nes->mapper = mapper;
   nes->bus = bus_create(mapper);
   nes->cpu = cpu_create(nes->bus);
+  nes->ppu = ppu_create(nes->bus);
+
+  nes->cycles = 0;
 
   return nes;
 }
@@ -19,8 +22,19 @@ void nes_destroy(nes_t* nes) {
     return;
   }
 
+  ppu_destroy(nes->ppu);
   cpu_destroy(nes->cpu);
   bus_destroy(nes->bus);
   mapper_destroy(nes->mapper);
   free(nes);
+}
+
+void nes_clock(nes_t* nes) {
+  if (nes->cycles % 3 == 0) {
+    cpu_clock(nes->cpu);
+  }
+
+  ppu_clock(nes->ppu);
+
+  nes->cycles++;
 }

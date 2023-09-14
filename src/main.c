@@ -3,6 +3,7 @@
 
 #include "mappers/mapper.h"
 #include "nes/nes.h"
+#include "peripherals/screen.h"
 #include "rom/rom.h"
 #include "utils/file.h"
 
@@ -41,12 +42,12 @@ int main(int argv, char** argc) {
 
   nes_t* nes = nes_create(rom);
 
-  bus_write8(nes->bus, 0x2002, 0xFF);
+  screen_clear();
 
   while (true) {
-    cpu_debug_print_state(nes->cpu);
-    printf("\n");
-    cpu_clock(nes->cpu);
+    // cpu_debug_print_state(nes->cpu);
+    // printf("\n");
+    nes_clock(nes);
   }
 
   nes_destroy(nes);

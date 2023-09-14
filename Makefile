@@ -5,8 +5,10 @@ OUT = build/nesemu
 MAIN = src/main.c
 SRC = src/memory/memory.c src/memory/bus.c \
 			src/nes/nes.c src/rom/rom.c \
+			src/peripherals/screen.c \
 			src/mappers/mapper.c src/mappers/mapper_0.c \
 			src/cpu/cpu.c src/cpu/debug.c src/cpu/instructions.c src/cpu/instructions_table.c src/cpu/address_modes.c \
+			src/ppu/ppu.c \
 
 TEST_OUT = build/test
 TEST_MAIN = test/main.c
@@ -17,6 +19,7 @@ ROM = roms/hello.nes
 all: build
 
 run: build
+	@mkdir -p frames
 	$(OUT) $(ROM)
 
 build: 
