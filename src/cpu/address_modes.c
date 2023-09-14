@@ -46,6 +46,10 @@ address_mode_t cpu_address_mode_relative(cpu_t* cpu) {
   s8 relative = cpu_fetch8(cpu);
   address_mode.address = relative + cpu->pc;
   address_mode.value = bus_read8(cpu->bus, address_mode.address);
+
+  address_mode.extra_cycle =
+      (cpu->pc & 0xFF00) != (address_mode.address & 0xFF00);
+
   return address_mode;
 }
 

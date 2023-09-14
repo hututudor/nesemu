@@ -369,7 +369,7 @@ u8 cpu_bcc(cpu_t* cpu, address_mode_t address_mode) {
 
   cpu->pc = address_mode.address;
 
-  return 1 + address_mode.extra_cycle * 2;
+  return 1 + address_mode.extra_cycle;
 }
 
 u8 cpu_bcs(cpu_t* cpu, address_mode_t address_mode) {
@@ -379,7 +379,7 @@ u8 cpu_bcs(cpu_t* cpu, address_mode_t address_mode) {
 
   cpu->pc = address_mode.address;
 
-  return 1 + address_mode.extra_cycle * 2;
+  return 1 + address_mode.extra_cycle;
 }
 
 u8 cpu_beq(cpu_t* cpu, address_mode_t address_mode) {
@@ -389,7 +389,7 @@ u8 cpu_beq(cpu_t* cpu, address_mode_t address_mode) {
 
   cpu->pc = address_mode.address;
 
-  return 1 + address_mode.extra_cycle * 2;
+  return 1 + address_mode.extra_cycle;
 }
 
 u8 cpu_bmi(cpu_t* cpu, address_mode_t address_mode) {
@@ -399,7 +399,7 @@ u8 cpu_bmi(cpu_t* cpu, address_mode_t address_mode) {
 
   cpu->pc = address_mode.address;
 
-  return 1 + address_mode.extra_cycle * 2;
+  return 1 + address_mode.extra_cycle;
 }
 
 u8 cpu_bne(cpu_t* cpu, address_mode_t address_mode) {
@@ -409,7 +409,7 @@ u8 cpu_bne(cpu_t* cpu, address_mode_t address_mode) {
 
   cpu->pc = address_mode.address;
 
-  return 1 + address_mode.extra_cycle * 2;
+  return 1 + address_mode.extra_cycle;
 }
 
 u8 cpu_bpl(cpu_t* cpu, address_mode_t address_mode) {
@@ -419,7 +419,7 @@ u8 cpu_bpl(cpu_t* cpu, address_mode_t address_mode) {
 
   cpu->pc = address_mode.address;
 
-  return 1 + address_mode.extra_cycle * 2;
+  return 1 + address_mode.extra_cycle;
 }
 
 u8 cpu_bvc(cpu_t* cpu, address_mode_t address_mode) {
@@ -429,7 +429,7 @@ u8 cpu_bvc(cpu_t* cpu, address_mode_t address_mode) {
 
   cpu->pc = address_mode.address;
 
-  return 1 + address_mode.extra_cycle * 2;
+  return 1 + address_mode.extra_cycle;
 }
 
 u8 cpu_bvs(cpu_t* cpu, address_mode_t address_mode) {
@@ -439,7 +439,7 @@ u8 cpu_bvs(cpu_t* cpu, address_mode_t address_mode) {
 
   cpu->pc = address_mode.address;
 
-  return 1 + address_mode.extra_cycle * 2;
+  return 1 + address_mode.extra_cycle;
 }
 
 u8 cpu_clc(cpu_t* cpu, address_mode_t address_mode) {
