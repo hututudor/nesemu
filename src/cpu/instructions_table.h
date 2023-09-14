@@ -4,11 +4,13 @@
 
 #define INSTRUCTIONS_COUNT 0xFF
 
-#define INSTRUCTION(opcode, _mnemonic, _execute, _parse_address_mode, _length) \
+#define INSTRUCTION(opcode, _mnemonic, _execute, _parse_address_mode, _length, \
+                    _cycles)                                                   \
   instructions_table[opcode].mnemonic = _mnemonic;                             \
   instructions_table[opcode].length = _length;                                 \
   instructions_table[opcode].parse_address_mode = _parse_address_mode;         \
-  instructions_table[opcode].execute = _execute;
+  instructions_table[opcode].execute = _execute;                               \
+  instructions_table[opcode].cycles = _cycles;
 
 instruction_t instructions_table[INSTRUCTIONS_COUNT];
 

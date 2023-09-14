@@ -22,6 +22,7 @@ typedef struct {
   u8 sp;
   cpu_status_flags_t status;
 
+  u8 cycles;
   bus_t* bus;
 } cpu_t;
 
@@ -29,22 +30,26 @@ typedef struct {
   u8 value;
   u16 address;
   bool is_a_register;
+
+  bool extra_cycle;
 } address_mode_t;
 
 typedef address_mode_t (*parse_address_mode_t)(cpu_t* cpu);
-typedef void (*execute_t)(cpu_t* cpu, address_mode_t address_mode);
+typedef u8 (*execute_t)(cpu_t* cpu, address_mode_t address_mode);
 
 typedef struct {
   parse_address_mode_t parse_address_mode;
   execute_t execute;
   char* mnemonic;
   u8 length;
+  u8 cycles;
 } instruction_t;
 
 cpu_t* cpu_create(bus_t* bus);
 void cpu_destroy(cpu_t* cpu);
 
-void cpu_execute(cpu_t* cpu);
+u8 cpu_execute(cpu_t* cpu);
+void cpu_clock(cpu_t* cpu);
 
 u8 cpu_fetch8(cpu_t* cpu);
 u16 cpu_fetch16(cpu_t* cpu);

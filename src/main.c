@@ -46,7 +46,7 @@ int main(int argv, char** argc) {
   while (true) {
     cpu_debug_print_state(nes->cpu);
     printf("\n");
-    cpu_execute(nes->cpu);
+    cpu_clock(nes->cpu);
   }
 
   nes_destroy(nes);

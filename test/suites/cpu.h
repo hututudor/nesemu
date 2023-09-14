@@ -949,7 +949,7 @@ TEST_BEGIN(should_execute_php_absolute) {
 
   cpu_execute(cpu);
   ASSERT(cpu->sp == 0xFE);
-  ASSERT(bus_read8(cpu->bus, 0x01FF) == 0b11110101);
+  ASSERT(bus_read8(cpu->bus, 0x01FF) == 0b11100101);
 }
 TEST_END
 

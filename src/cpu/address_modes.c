@@ -58,15 +58,25 @@ address_mode_t cpu_address_mode_absolute(cpu_t* cpu) {
 
 address_mode_t cpu_address_mode_absolute_x(cpu_t* cpu) {
   address_mode_t address_mode = {0};
-  address_mode.address = cpu_fetch16(cpu) + cpu->x;
+  u16 base_address = cpu_fetch16(cpu);
+  address_mode.address = base_address + cpu->x;
   address_mode.value = bus_read8(cpu->bus, address_mode.address);
+
+  address_mode.extra_cycle =
+      (base_address & 0xFF00) != (address_mode.address & 0xFF00);
+
   return address_mode;
 }
 
 address_mode_t cpu_address_mode_absolute_y(cpu_t* cpu) {
   address_mode_t address_mode = {0};
-  address_mode.address = cpu_fetch16(cpu) + cpu->y;
+  u16 base_address = cpu_fetch16(cpu);
+  address_mode.address = base_address + cpu->y;
   address_mode.value = bus_read8(cpu->bus, address_mode.address);
+
+  address_mode.extra_cycle =
+      (base_address & 0xFF00) != (address_mode.address & 0xFF00);
+
   return address_mode;
 }
 
@@ -96,7 +106,12 @@ address_mode_t cpu_address_mode_indirect_x(cpu_t* cpu) {
 address_mode_t cpu_address_mode_indirect_y(cpu_t* cpu) {
   address_mode_t address_mode = {0};
   u8 address = cpu_fetch8(cpu);
-  address_mode.address = bus_read16(cpu->bus, address) + cpu->y;
+  u16 base_address = bus_read16(cpu->bus, address);
+  address_mode.address = base_address + cpu->y;
   address_mode.value = bus_read8(cpu->bus, address_mode.address);
+
+  address_mode.extra_cycle =
+      (base_address & 0xFF00) != (address_mode.address & 0xFF00);
+
   return address_mode;
 }

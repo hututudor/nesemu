@@ -10,6 +10,7 @@ cpu_t* cpu_create(bus_t* bus) {
 
   cpu_t* cpu = (cpu_t*)calloc(1, sizeof(cpu_t));
   cpu->bus = bus;
+  cpu->cycles = 0;
 
   cpu->pc = cpu_fetch_reset_vector(cpu);
   cpu->sp = 0xFD;
@@ -31,7 +32,7 @@ void cpu_destroy(cpu_t* cpu) {
   free(cpu);
 }
 
-void cpu_execute(cpu_t* cpu) {
+u8 cpu_execute(cpu_t* cpu) {
   u8 opcode = cpu_fetch8(cpu);
   instruction_t instruction = instructions_table[opcode];
 
@@ -42,7 +43,16 @@ void cpu_execute(cpu_t* cpu) {
   }
 
   address_mode_t address_mode = instruction.parse_address_mode(cpu);
-  instruction.execute(cpu, address_mode);
+  return instruction.execute(cpu, address_mode) + instruction.cycles;
+}
+
+void cpu_clock(cpu_t* cpu) {
+  if (cpu->cycles > 0) {
+    cpu->cycles--;
+    return;
+  }
+
+  cpu->cycles += cpu_execute(cpu) - 1;
 }
 
 u8 cpu_fetch8(cpu_t* cpu) { return bus_read8(cpu->bus, cpu->pc++); }
