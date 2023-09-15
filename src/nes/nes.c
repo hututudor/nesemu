@@ -8,9 +8,11 @@ nes_t* nes_create(rom_t* rom) {
   mapper_t* mapper = mapper_create(rom);
 
   nes->mapper = mapper;
-  nes->bus = bus_create(mapper);
-  nes->cpu = cpu_create(nes->bus);
   nes->ppu = ppu_create(nes->bus);
+  nes->bus = bus_create(mapper, nes->ppu);
+  nes->cpu = cpu_create(nes->bus);
+
+  ppu_connect_bus(nes->ppu, nes->bus);
 
   nes->cycles = 0;
 

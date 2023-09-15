@@ -19,14 +19,21 @@ static void ppu_export_frame() {
   }
 }
 
-ppu_t* ppu_create(bus_t* bus) {
+ppu_t* ppu_create() {
   ppu_t* ppu = (ppu_t*)calloc(1, sizeof(ppu_t));
-  ppu->bus = bus;
 
   ppu->scan_line = 0;
   ppu->cycle = 0;
 
   return ppu;
+}
+
+void ppu_connect_bus(ppu_t* ppu, bus_t* bus) {
+  if (!ppu || !bus) {
+    return;
+  }
+
+  ppu->bus = bus;
 }
 
 void ppu_destroy(ppu_t* ppu) {

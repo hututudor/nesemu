@@ -16,12 +16,6 @@ TEST_BEGIN(should_read_and_write_same_byte) {
   bus_write8(bus, 0x1900, 0x13);
   ASSERT(bus_read8(bus, 0x1900) == 0x13);
 
-  bus_write8(bus, 0x2002, 0x14);
-  ASSERT(bus_read8(bus, 0x2002) == 0x14);
-
-  bus_write8(bus, 0x2100, 0x15);
-  ASSERT(bus_read8(bus, 0x2100) == 0x15);
-
   bus_write8(bus, 0x4012, 0x16);
   ASSERT(bus_read8(bus, 0x4012) == 0x16);
 }
@@ -42,12 +36,6 @@ TEST_BEGIN(should_read_and_write_same_2_bytes) {
   bus_write16(bus, 0x1900, 0x1320);
   ASSERT(bus_read16(bus, 0x1900) == 0x1320);
 
-  bus_write16(bus, 0x2002, 0x1420);
-  ASSERT(bus_read16(bus, 0x2002) == 0x1420);
-
-  bus_write16(bus, 0x2100, 0x1520);
-  ASSERT(bus_read16(bus, 0x2100) == 0x1520);
-
   bus_write16(bus, 0x4012, 0x1620);
   ASSERT(bus_read16(bus, 0x4012) == 0x1620);
 }
@@ -61,11 +49,6 @@ TEST_BEGIN(should_read_and_write_mirrored) {
   ASSERT(bus_read8(bus, 0x0900) == 0x10);
   ASSERT(bus_read8(bus, 0x1100) == 0x10);
   ASSERT(bus_read8(bus, 0x1900) == 0x10);
-
-  bus_write8(bus, 0x2002, 0x11);
-  ASSERT(bus_read8(bus, 0x2002) == 0x11);
-  ASSERT(bus_read8(bus, 0x2102) == 0x11);
-  ASSERT(bus_read8(bus, 0x210A) == 0x11);
 }
 TEST_END
 

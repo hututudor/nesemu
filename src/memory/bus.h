@@ -3,10 +3,12 @@
 #include "../mappers/mapper.h"
 #include "memory.h"
 
+typedef struct ppu_t ppu_t;
+
 typedef struct {
   memory_t* ram;
-  memory_t* ppu_registers;
   memory_t* apu_and_io;
+  struct ppu_t* ppu;
   mapper_t* mapper;
 } bus_t;
 
@@ -15,7 +17,7 @@ typedef struct {
   u16 address;
 } bus_address_t;
 
-bus_t* bus_create(mapper_t* mapper);
+bus_t* bus_create(mapper_t* mapper, ppu_t* ppu);
 void bus_destroy(bus_t* bus);
 
 u8 bus_read8(bus_t* bus, u16 address);
