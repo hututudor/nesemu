@@ -22,6 +22,9 @@ static void ppu_export_frame() {
 ppu_t* ppu_create() {
   ppu_t* ppu = (ppu_t*)calloc(1, sizeof(ppu_t));
 
+  ppu->nametable_memory = memory_create(0x2000, 0x1000);
+  ppu->palette_memory = memory_create(0x03F00, 0x0100);
+
   ppu->scan_line = 0;
   ppu->cycle = 0;
 
@@ -32,6 +35,9 @@ void ppu_connect_bus(ppu_t* ppu, bus_t* bus) {
   if (!ppu || !bus) {
     return;
   }
+
+  free(ppu->nametable_memory);
+  free(ppu->palette_memory);
 
   ppu->bus = bus;
 }

@@ -37,6 +37,9 @@ typedef struct ppu_t {
     u8 v_blank : 1;
   } status;
 
+  memory_t* nametable_memory;
+  memory_t* palette_memory;
+
   bus_t* bus;
 } ppu_t;
 
@@ -46,5 +49,8 @@ void ppu_destroy(ppu_t* ppu);
 
 u8 ppu_read8(ppu_t* ppu, u16 address);
 void ppu_write8(ppu_t* ppu, u16 address, u8 value);
+
+u8 ppu_internal_read8(ppu_t* ppu, u16 address);
+void ppu_internal_write8(ppu_t* ppu, u16 address, u8 value);
 
 void ppu_clock(ppu_t* ppu);

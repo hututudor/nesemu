@@ -8,7 +8,7 @@ typedef struct ppu_t ppu_t;
 typedef struct {
   memory_t* ram;
   memory_t* apu_and_io;
-  struct ppu_t* ppu;
+  ppu_t* ppu;
   mapper_t* mapper;
 } bus_t;
 
