@@ -4,7 +4,7 @@
 
 u32 frame_count = 0;
 
-static void ppu_export_frame() {
+static void ppu_export_frame(ppu_t* ppu) {
   char* path = (char*)calloc(256, sizeof(char));
   sprintf(path, "frames/frame%d.ppm", frame_count++);
 
@@ -28,6 +28,12 @@ ppu_t* ppu_create() {
   ppu->scan_line = 0;
   ppu->cycle = 0;
 
+  ppu->latch_low = 0;
+  ppu->latch_address = 0;
+
+  ppu->scroll_x = 0;
+  ppu->scroll_y = 0;
+
   return ppu;
 }
 
@@ -36,9 +42,6 @@ void ppu_connect_bus(ppu_t* ppu, bus_t* bus) {
     return;
   }
 
-  free(ppu->nametable_memory);
-  free(ppu->palette_memory);
-
   ppu->bus = bus;
 }
 
@@ -46,6 +49,9 @@ void ppu_destroy(ppu_t* ppu) {
   if (!ppu) {
     return;
   }
+
+  memory_destroy(ppu->palette_memory);
+  memory_destroy(ppu->nametable_memory);
 
   free(ppu);
 }
@@ -62,8 +68,10 @@ void ppu_clock(ppu_t* ppu) {
     ppu->scan_line = 0;
   }
 
+  // vblank
   if (ppu->scan_line == 241 && ppu->cycle == 1) {
-    ppu_export_frame();
+    ppu->status.v_blank = 1;
+    ppu_export_frame(ppu);
   }
 
   if (ppu->scan_line < 240 && ppu->cycle < 256) {

@@ -27,7 +27,6 @@ typedef struct {
 } cpu_t;
 
 typedef struct {
-  u8 value;
   u16 address;
   bool is_a_register;
 

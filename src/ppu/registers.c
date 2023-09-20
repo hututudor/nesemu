@@ -1,12 +1,46 @@
 #include "ppu.h"
 
 u8 ppu_read_ctrl(ppu_t* ppu) { return 0x00; }
-void ppu_write_ctrl(ppu_t* ppu, u8 value) {}
+void ppu_write_ctrl(ppu_t* ppu, u8 value) {
+  ppu->ctrl.base_nametable_address = (value >> 0) & 0x03;
+  ppu->ctrl.vram_increment = (value >> 2) & 0x01;
+  ppu->ctrl.sprite_pattern_address = (value >> 3) & 0x01;
+  ppu->ctrl.background_pattern_address = (value >> 4) & 0x01;
+  ppu->ctrl.sprite_size = (value >> 5) & 0x01;
+  ppu->ctrl.master_slave_select = (value >> 6) & 0x01;
+  ppu->ctrl.generate_nmi = (value >> 7) & 0x01;
+}
 
 u8 ppu_read_mask(ppu_t* ppu) { return 0x00; }
-void ppu_write_mask(ppu_t* ppu, u8 value) {}
+void ppu_write_mask(ppu_t* ppu, u8 value) {
+  ppu->mask.grayscale = (value >> 0) & 0x01;
+  ppu->mask.show_background_leftmost_8px = (value >> 1) & 0x01;
+  ppu->mask.show_sprites_leftmost_8px = (value >> 2) & 0x01;
+  ppu->mask.show_background = (value >> 3) & 0x01;
+  ppu->mask.show_sprites = (value >> 4) & 0x01;
+  ppu->mask.emphasize_red = (value >> 5) & 0x01;
+  ppu->mask.emphasize_green = (value >> 6) & 0x01;
+  ppu->mask.emphasize_blue = (value >> 7) & 0x01;
+}
 
-u8 ppu_read_status(ppu_t* ppu) { return 0x00; }
+u8 ppu_read_status(ppu_t* ppu) {
+  u8 res = 0;
+
+  res += ppu->status.v_blank;
+  res <<= 1;
+
+  res += ppu->status.sprite_0_hit;
+  res <<= 1;
+
+  res += ppu->status.sprite_overflow;
+  res <<= 5;
+
+  ppu->status.v_blank = 0;
+  ppu->latch_low = 0;
+
+  return res;
+}
+
 void ppu_write_status(ppu_t* ppu, u8 value) {}
 
 u8 ppu_read_oam_addr(ppu_t* ppu) { return 0x00; }
@@ -16,15 +50,56 @@ u8 ppu_read_oam_data(ppu_t* ppu) { return 0x00; }
 void ppu_write_oam_data(ppu_t* ppu, u8 value) {}
 
 u8 ppu_read_scroll(ppu_t* ppu) { return 0x00; }
-void ppu_write_scroll(ppu_t* ppu, u8 value) {}
+void ppu_write_scroll(ppu_t* ppu, u8 value) {
+  if (ppu->latch_low == 0) {
+    ppu->scroll_x = value;
+    ppu->latch_low = 1;
+  } else {
+    ppu->scroll_y = value;
+    ppu->latch_low = 0;
+  }
+}
 
 u8 ppu_read_addr(ppu_t* ppu) { return 0x00; }
-void ppu_write_addr(ppu_t* ppu, u8 value) {}
+void ppu_write_addr(ppu_t* ppu, u8 value) {
+  if (ppu->latch_low == 0) {
+    ppu->latch_address &= 0x00FF;
+    ppu->latch_address |= ((u16)value) << 8;
+    ppu->latch_low = 1;
+  } else {
+    ppu->latch_address &= 0xFF00;
+    ppu->latch_address |= value;
+    ppu->latch_low = 0;
+  }
+}
 
-u8 ppu_read_data(ppu_t* ppu) { return 0x00; }
-void ppu_write_data(ppu_t* ppu, u8 value) {}
+u8 ppu_read_data(ppu_t* ppu) {
+  u8 value = ppu_internal_read8(ppu, ppu->latch_address);
+
+  u8 res = 0;
+  if (ppu->latch_address < 0x3F00) {
+    res = ppu->data_buffer;
+  } else {
+    res = value;
+  }
+
+  ppu->data_buffer = value;
+  ppu->latch_address += (ppu->ctrl.vram_increment ? 32 : 1);
+
+  return res;
+}
+
+void ppu_write_data(ppu_t* ppu, u8 value) {
+  // printf("[W DATA] %04X: %02X\n", ppu->latch_address, value);
+
+  ppu_internal_write8(ppu, ppu->latch_address & 0x3FFF, value);
+
+  ppu->latch_address += (ppu->ctrl.vram_increment ? 32 : 1);
+}
 
 u8 ppu_read8(ppu_t* ppu, u16 address) {
+  // printf("[R] %04X\n", address);
+
   switch (address & 0x07) {
     case 0x00:
       return ppu_read_ctrl(ppu);
@@ -41,6 +116,8 @@ u8 ppu_read8(ppu_t* ppu, u16 address) {
     case 0x06:
       return ppu_read_addr(ppu);
     case 0x07:
+      fflush(stdout);
+      exit(0);
       return ppu_read_data(ppu);
   }
 
@@ -48,6 +125,8 @@ u8 ppu_read8(ppu_t* ppu, u16 address) {
 }
 
 void ppu_write8(ppu_t* ppu, u16 address, u8 value) {
+  // printf("[W] %04X %02X\n", address, value);
+
   switch (address & 0x07) {
     case 0x00:
       ppu_write_ctrl(ppu, value);
@@ -89,6 +168,8 @@ u8 ppu_internal_read8(ppu_t* ppu, u16 address) {
 }
 
 void ppu_internal_write8(ppu_t* ppu, u16 address, u8 value) {
+  fflush(stdout);
+
   if (address < 0x2000) {
     ppu->bus->mapper->chr_write8(ppu->bus->mapper, address, value);
     return;

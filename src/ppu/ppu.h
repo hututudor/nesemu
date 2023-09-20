@@ -37,6 +37,13 @@ typedef struct ppu_t {
     u8 v_blank : 1;
   } status;
 
+  u8 latch_low;
+  u16 latch_address;
+  u8 data_buffer;
+
+  u8 scroll_x;
+  u8 scroll_y;
+
   memory_t* nametable_memory;
   memory_t* palette_memory;
 
