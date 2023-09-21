@@ -42,7 +42,7 @@ int main(int argv, char** argc) {
 
   nes_t* nes = nes_create(rom);
 
-  screen_clear();
+  screen_init();
 
   while (true) {
     // cpu_debug_print_state(nes->cpu);
