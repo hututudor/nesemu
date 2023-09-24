@@ -1,3 +1,4 @@
+#include "../cpu/cpu.h"
 #include "ppu.h"
 
 u8 ppu_read_ctrl(ppu_t* ppu) { return 0x00; }
@@ -90,16 +91,12 @@ u8 ppu_read_data(ppu_t* ppu) {
 }
 
 void ppu_write_data(ppu_t* ppu, u8 value) {
-  // printf("[W DATA] %04X: %02X\n", ppu->latch_address, value);
-
   ppu_internal_write8(ppu, ppu->latch_address & 0x3FFF, value);
 
   ppu->latch_address += (ppu->ctrl.vram_increment ? 32 : 1);
 }
 
 u8 ppu_read8(ppu_t* ppu, u16 address) {
-  // printf("[R] %04X\n", address);
-
   switch (address & 0x07) {
     case 0x00:
       return ppu_read_ctrl(ppu);
@@ -116,8 +113,6 @@ u8 ppu_read8(ppu_t* ppu, u16 address) {
     case 0x06:
       return ppu_read_addr(ppu);
     case 0x07:
-      fflush(stdout);
-      exit(0);
       return ppu_read_data(ppu);
   }
 
@@ -125,8 +120,6 @@ u8 ppu_read8(ppu_t* ppu, u16 address) {
 }
 
 void ppu_write8(ppu_t* ppu, u16 address, u8 value) {
-  // printf("[W] %04X %02X\n", address, value);
-
   switch (address & 0x07) {
     case 0x00:
       ppu_write_ctrl(ppu, value);

@@ -6,7 +6,10 @@
 color_t screen[SCREEN_HEIGHT][SCREEN_WIDTH] = {0};
 color_t palette_colors[PALETTE_COLORS_COUNT] = {0};
 
-void screen_init() { screen_clear(); }
+void screen_init() {
+  screen_clear();
+  screen_init_palette_colors();
+}
 
 void screen_clear() {
   for (u16 y = 0; y < SCREEN_HEIGHT; y++) {

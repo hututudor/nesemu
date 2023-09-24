@@ -66,7 +66,7 @@ void mapper_0_prg_write16(void* this, u16 address, u16 value) {
 u8 mapper_0_chr_read8(void* this, u16 address) {
   mapper_t* mapper = (mapper_t*)this;
 
-  address &= (mapper->rom->header.chr_rom_size * 0x2000);
+  address &= (mapper->rom->header.chr_rom_size * 0x2000 - 1);
 
   return mapper->rom->chr_rom[address];
 }

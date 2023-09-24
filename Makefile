@@ -8,19 +8,21 @@ SRC = src/memory/memory.c src/memory/bus.c \
 			src/peripherals/screen.c \
 			src/mappers/mapper.c src/mappers/mapper_0.c \
 			src/cpu/cpu.c src/cpu/debug.c src/cpu/instructions.c src/cpu/instructions_table.c src/cpu/address_modes.c \
-			src/ppu/ppu.c src/ppu/registers.c \
+			src/ppu/ppu.c src/ppu/registers.c src/ppu/rendering.c\
 
 TEST_OUT = build/test
 TEST_MAIN = test/main.c
 TEST_SRC = $(SRC)
 
-ROM = roms/hello.nes
+ROM = roms/nestest.nes
 
 all: build
 
 run: build
 	@mkdir -p frames
 	$(OUT) $(ROM)
+	convert frames/*.ppm frames/frame.png
+	rm frames/*.ppm
 
 build: 
 	@mkdir -p build

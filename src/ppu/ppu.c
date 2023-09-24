@@ -1,5 +1,6 @@
 #include "ppu.h"
 
+#include "../cpu/cpu.h"
 #include "../peripherals/screen.h"
 
 u32 frame_count = 0;
@@ -62,24 +63,31 @@ void ppu_clock(ppu_t* ppu) {
   if (ppu->cycle > 341) {
     ppu->cycle = 0;
     ppu->scan_line++;
+    return;
   }
 
   if (ppu->scan_line > 262) {
     ppu->scan_line = 0;
   }
 
-  // vblank
+  // vblank set
   if (ppu->scan_line == 241 && ppu->cycle == 1) {
     ppu->status.v_blank = 1;
+
+    if (ppu->ctrl.generate_nmi) {
+      cpu_nmi(ppu->bus->cpu);
+    }
+
     ppu_export_frame(ppu);
   }
 
+  // vblank reset
+  if (ppu->scan_line == 0 && ppu->cycle == 0) {
+    ppu->status.v_blank = 0;
+  }
+
   if (ppu->scan_line < 240 && ppu->cycle < 256) {
-    color_t color = {0};
-    color.r = ppu->cycle & 0xFF;
-    color.g = (ppu->cycle & 0xFF00) >> 8;
-    color.b = ppu->scan_line;
-    screen_draw_color(ppu->cycle, ppu->scan_line, color);
+    ppu_render_pixel(ppu, frame_count);
   }
 
   // printf("PPU %d %d\n", ppu->scan_line, ppu->cycle);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../../src/cpu/cpu.h"
 #include "../../src/mappers/mapper.h"
 #include "../../src/memory/bus.h"
 #include "../../src/ppu/ppu.h"
@@ -12,9 +13,12 @@ bus_t* mock_bus() {
 
   mapper_t* mapper = mapper_create(rom);
   ppu_t* ppu = ppu_create();
+  cpu_t* cpu = cpu_create();
 
-  bus_t* bus = bus_create(mapper, ppu);
+  bus_t* bus = bus_create(mapper, cpu, ppu);
+
   ppu_connect_bus(ppu, bus);
+  cpu_connect_bus(cpu, bus);
 
   return bus;
 }

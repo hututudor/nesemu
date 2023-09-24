@@ -54,6 +54,8 @@ ppu_t* ppu_create();
 void ppu_connect_bus(ppu_t* ppu, bus_t* bus);
 void ppu_destroy(ppu_t* ppu);
 
+void ppu_render_pixel(ppu_t* ppu, u32 frames);
+
 u8 ppu_read8(ppu_t* ppu, u16 address);
 void ppu_write8(ppu_t* ppu, u16 address, u8 value);
 

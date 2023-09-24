@@ -27,13 +27,15 @@ address_mode_t cpu_address_mode_zp(cpu_t* cpu) {
 
 address_mode_t cpu_address_mode_zp_x(cpu_t* cpu) {
   address_mode_t address_mode = {0};
-  address_mode.address = (cpu_fetch8(cpu) + cpu->x) & 0xFF;
+  address_mode.address = (cpu_fetch8(cpu) + cpu->x);
+  address_mode.address &= 0x00FF;
   return address_mode;
 }
 
 address_mode_t cpu_address_mode_zp_y(cpu_t* cpu) {
   address_mode_t address_mode = {0};
-  address_mode.address = (cpu_fetch8(cpu) + cpu->y) & 0xFF;
+  address_mode.address = (cpu_fetch8(cpu) + cpu->y);
+  address_mode.address &= 0x00FF;
   return address_mode;
 }
 

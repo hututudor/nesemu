@@ -3,16 +3,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../ppu/ppu.h"
 #include "instructions_table.h"
 
-cpu_t* cpu_create(bus_t* bus) {
+cpu_t* cpu_create() {
   load_instruction_table();
 
   cpu_t* cpu = (cpu_t*)calloc(1, sizeof(cpu_t));
-  cpu->bus = bus;
   cpu->cycles = 0;
 
-  cpu->pc = cpu_fetch_reset_vector(cpu);
   cpu->sp = 0xFD;
 
   cpu->status.i = 1;
@@ -22,6 +21,15 @@ cpu_t* cpu_create(bus_t* bus) {
   cpu->y = 0;
 
   return cpu;
+}
+
+void cpu_connect_bus(cpu_t* cpu, bus_t* bus) {
+  if (!cpu || !bus) {
+    return;
+  }
+
+  cpu->bus = bus;
+  cpu->pc = cpu_fetch_reset_vector(cpu);
 }
 
 void cpu_destroy(cpu_t* cpu) {
@@ -37,7 +45,10 @@ u8 cpu_execute(cpu_t* cpu) {
   instruction_t instruction = instructions_table[opcode];
 
   if (!instruction.execute) {
-    printf("[CPU] ILLEGAL INSTRUCTION REACHED: %02X\n", opcode);
+    printf("[CPU] ILLEGAL INSTRUCTION REACHED: %02X (AT %04X)\n", opcode,
+           cpu->pc);
+
+    fflush(stdout);
 
     exit(0);
   }
@@ -51,6 +62,9 @@ void cpu_clock(cpu_t* cpu) {
     cpu->cycles--;
     return;
   }
+
+  // cpu_debug_print_state(cpu);
+  // printf("\n");
 
   cpu->cycles += cpu_execute(cpu) - 1;
 }
@@ -123,5 +137,13 @@ void cpu_set_status(cpu_t* cpu, u8 status) {
 }
 
 void cpu_set_status_n(cpu_t* cpu, u8 value) {
-  cpu->status.n = (value >> 7) & 1;
+  cpu->status.n = (value & 0x80) > 0;
+}
+
+void cpu_nmi(cpu_t* cpu) {
+  cpu->cycles += 7;
+
+  cpu_push16(cpu, cpu->pc);
+  cpu_push8(cpu, cpu_get_status(cpu));
+  cpu->pc = cpu_fetch_nmi_vector(cpu);
 }

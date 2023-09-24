@@ -13,7 +13,7 @@ typedef struct {
   u8 n : 1;  // negative
 } cpu_status_flags_t;
 
-typedef struct {
+typedef struct cpu_t {
   u8 a;
   u8 x;
   u8 y;
@@ -44,7 +44,8 @@ typedef struct {
   u8 cycles;
 } instruction_t;
 
-cpu_t* cpu_create(bus_t* bus);
+cpu_t* cpu_create();
+void cpu_connect_bus(cpu_t* cpu, bus_t* bus);
 void cpu_destroy(cpu_t* cpu);
 
 u8 cpu_execute(cpu_t* cpu);
@@ -56,6 +57,8 @@ u16 cpu_fetch16(cpu_t* cpu);
 u16 cpu_fetch_nmi_vector(cpu_t* cpu);
 u16 cpu_fetch_irq_vector(cpu_t* cpu);
 u16 cpu_fetch_reset_vector(cpu_t* cpu);
+
+void cpu_nmi(cpu_t* cpu);
 
 void cpu_push8(cpu_t* cpu, u8 value);
 u8 cpu_pop8(cpu_t* cpu);

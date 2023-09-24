@@ -5,7 +5,7 @@
 
 cpu_t* mock_cpu() {
   bus_t* bus = mock_bus();
-  return cpu_create(bus);
+  return bus->cpu;
 }
 
 #define INSTRUCTION_LDA_ABSOLUTE 0xAD

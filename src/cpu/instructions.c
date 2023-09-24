@@ -296,7 +296,7 @@ u8 cpu_asl(cpu_t* cpu, address_mode_t address_mode) {
                  : bus_read8(cpu->bus, address_mode.address);
 
   u8 result = value << 1;
-  cpu->status.c = (result >> 7) & 1;
+  cpu->status.c = (value >> 7) & 1;
 
   if (address_mode.is_a_register) {
     cpu->a = result;
@@ -316,7 +316,7 @@ u8 cpu_lsr(cpu_t* cpu, address_mode_t address_mode) {
                  : bus_read8(cpu->bus, address_mode.address);
 
   u8 result = value >> 1;
-  cpu->status.c = result & 1;
+  cpu->status.c = value & 1;
 
   if (address_mode.is_a_register) {
     cpu->a = result;

@@ -2,13 +2,15 @@
 
 #include <stdlib.h>
 
+#include "../cpu/cpu.h"
 #include "../ppu/ppu.h"
 
-bus_t* bus_create(mapper_t* mapper, ppu_t* ppu) {
+bus_t* bus_create(mapper_t* mapper, cpu_t* cpu, ppu_t* ppu) {
   bus_t* bus = (bus_t*)calloc(1, sizeof(bus_t));
 
   bus->ram = memory_create(0x0000, 0x0800);
   bus->apu_and_io = memory_create(0x4000, 0x0020);
+  bus->cpu = cpu;
   bus->ppu = ppu;
   bus->mapper = mapper;
 
@@ -47,7 +49,7 @@ u8 bus_read8(bus_t* bus, u16 address) {
   }
 
   if (address >= 0x2000 && address <= 0x3FFF) {
-    return ppu_read8(bus->ppu, address);
+    return ppu_read8(bus->ppu, address - 0x2000);
   }
 
   bus_address_t bus_address = parse_bus_address(bus, address);
@@ -61,7 +63,7 @@ void bus_write8(bus_t* bus, u16 address, u8 value) {
   }
 
   if (address >= 0x2000 && address <= 0x3FFF) {
-    ppu_write8(bus->ppu, address, value);
+    ppu_write8(bus->ppu, address - 0x2000, value);
     return;
   }
 

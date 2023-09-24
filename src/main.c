@@ -45,8 +45,6 @@ int main(int argv, char** argc) {
   screen_init();
 
   while (true) {
-    // cpu_debug_print_state(nes->cpu);
-    // printf("\n");
     nes_clock(nes);
   }
 
