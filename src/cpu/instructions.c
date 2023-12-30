@@ -97,9 +97,6 @@ u8 cpu_tsx(cpu_t* cpu, address_mode_t address_mode) {
 u8 cpu_txs(cpu_t* cpu, address_mode_t address_mode) {
   cpu->sp = cpu->x;
 
-  cpu_set_status_z(cpu, cpu->sp);
-  cpu_set_status_n(cpu, cpu->sp);
-
   return 0;
 }
 
