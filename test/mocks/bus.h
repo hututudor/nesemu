@@ -3,6 +3,7 @@
 #include "../../src/cpu/cpu.h"
 #include "../../src/mappers/mapper.h"
 #include "../../src/memory/bus.h"
+#include "../../src/peripherals/controller.h"
 #include "../../src/ppu/ppu.h"
 #include "../../src/rom/rom.h"
 #include "../../src/utils/file.h"
@@ -15,7 +16,10 @@ bus_t* mock_bus() {
   ppu_t* ppu = ppu_create();
   cpu_t* cpu = cpu_create();
 
-  bus_t* bus = bus_create(mapper, cpu, ppu);
+  controller_t* controller_1 = controller_create();
+  controller_t* controller_2 = controller_create();
+
+  bus_t* bus = bus_create(mapper, cpu, ppu, controller_1, controller_2);
 
   ppu_connect_bus(ppu, bus);
   cpu_connect_bus(cpu, bus);

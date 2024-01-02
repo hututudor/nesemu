@@ -17,6 +17,7 @@ void screen_clear() {
       screen[y][x].r = 0;
       screen[y][x].g = 0;
       screen[y][x].b = 0;
+      screen[y][x].a = 0xFF;
     }
   }
 }

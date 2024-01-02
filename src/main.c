@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "io/input.h"
+#include "io/window.h"
 #include "mappers/mapper.h"
 #include "nes/nes.h"
 #include "peripherals/screen.h"
@@ -8,6 +10,9 @@
 #include "utils/file.h"
 
 void usage(char* program_name);
+
+#define CPU_CYCLES_PER_FRAME 29780
+#define PPU_CYCLES_PER_FRAME (CPU_CYCLES_PER_FRAME * 3)
 
 int main(int argv, char** argc) {
   if (argv < 2) {
@@ -42,13 +47,19 @@ int main(int argv, char** argc) {
 
   nes_t* nes = nes_create(rom);
 
-  screen_init();
+  window_init();
 
-  while (true) {
-    nes_clock(nes);
+  while (window_is_running) {
+    window_update();
+    keys_update();
+
+    for (int i = 0; i < PPU_CYCLES_PER_FRAME; i++) {
+      nes_clock(nes);
+    }
   }
 
   nes_destroy(nes);
+  window_destroy();
 
   return 0;
 }

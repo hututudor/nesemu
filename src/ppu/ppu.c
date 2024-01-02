@@ -15,6 +15,7 @@ static void ppu_export_frame(ppu_t* ppu) {
   free(path);
 
   // temporary hard stop after 1s of frames
+  printf("frame_count: %d\n", frame_count);
   if (frame_count > 59) {
     exit(0);
   }
@@ -78,7 +79,7 @@ void ppu_clock(ppu_t* ppu) {
       cpu_nmi(ppu->bus->cpu);
     }
 
-    ppu_export_frame(ppu);
+    // ppu_export_frame(ppu);
   }
 
   // vblank reset

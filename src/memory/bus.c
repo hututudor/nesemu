@@ -3,15 +3,19 @@
 #include <stdlib.h>
 
 #include "../cpu/cpu.h"
+#include "../peripherals/controller.h"
 #include "../ppu/ppu.h"
 
-bus_t* bus_create(mapper_t* mapper, cpu_t* cpu, ppu_t* ppu) {
+bus_t* bus_create(mapper_t* mapper, cpu_t* cpu, ppu_t* ppu,
+                  controller_t* controller_1, controller_t* controller_2) {
   bus_t* bus = (bus_t*)calloc(1, sizeof(bus_t));
 
   bus->ram = memory_create(0x0000, 0x0800);
   bus->apu_and_io = memory_create(0x4000, 0x0020);
   bus->cpu = cpu;
   bus->ppu = ppu;
+  bus->controller_1 = controller_1;
+  bus->controller_2 = controller_2;
   bus->mapper = mapper;
 
   return bus;
@@ -52,6 +56,14 @@ u8 bus_read8(bus_t* bus, u16 address) {
     return ppu_read8(bus->ppu, address - 0x2000);
   }
 
+  if (address == 0x4016) {
+    return controller_read(bus->controller_1);
+  }
+
+  if (address == 0x4017) {
+    return controller_read(bus->controller_2);
+  }
+
   bus_address_t bus_address = parse_bus_address(bus, address);
   return memory_read8(bus_address.memory, bus_address.address);
 }
@@ -64,6 +76,12 @@ void bus_write8(bus_t* bus, u16 address, u8 value) {
 
   if (address >= 0x2000 && address <= 0x3FFF) {
     ppu_write8(bus->ppu, address - 0x2000, value);
+    return;
+  }
+
+  if (address == 0x4016) {
+    controller_set_strobe(bus->controller_1, value);
+    controller_set_strobe(bus->controller_2, value);
     return;
   }
 

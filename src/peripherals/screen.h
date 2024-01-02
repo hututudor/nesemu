@@ -7,8 +7,10 @@
 #define PALETTE_COLORS_COUNT 0x40
 
 typedef struct {
-  u8 r, g, b;
+  u8 r, g, b, a;
 } color_t;
+
+extern color_t screen[SCREEN_HEIGHT][SCREEN_WIDTH];
 
 void screen_init();
 void screen_clear();

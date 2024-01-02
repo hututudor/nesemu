@@ -3,6 +3,7 @@
 #include "../cpu/cpu.h"
 #include "../mappers/mapper.h"
 #include "../memory/bus.h"
+#include "../peripherals/controller.h"
 #include "../ppu/ppu.h"
 #include "../rom/rom.h"
 
@@ -11,6 +12,9 @@ typedef struct {
   mapper_t* mapper;
   cpu_t* cpu;
   ppu_t* ppu;
+
+  controller_t* controller_1;
+  controller_t* controller_2;
 
   u64 cycles;
 } nes_t;
