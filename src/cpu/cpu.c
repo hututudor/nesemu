@@ -66,6 +66,9 @@ void cpu_clock(cpu_t* cpu) {
   // cpu_debug_print_state(cpu);
   // printf("\n");
 
+  // cpu_debug_print_log(cpu);
+  // printf("\n");
+
   cpu->cycles += cpu_execute(cpu) - 1;
 }
 
@@ -109,7 +112,7 @@ void cpu_set_status_v(cpu_t* cpu, u8 result, u8 a, u8 b) {
   u8 bSign = (b & 0x80) >> 7;
   u8 resultSign = (result & 0x80) >> 7;
 
-  cpu->status.v = (resultSign != aSign) && (resultSign != bSign);
+  cpu->status.v = (aSign == bSign) && (aSign != resultSign);
 }
 
 u8 cpu_get_status(cpu_t* cpu) {
@@ -118,7 +121,7 @@ u8 cpu_get_status(cpu_t* cpu) {
   res = (res << 1) + cpu->status.n;
   res = (res << 1) + cpu->status.v;
   res = (res << 1) + 1;
-  res = (res << 1) + 0;
+  res = (res << 1) + cpu->status.b;
   res = (res << 1) + cpu->status.d;
   res = (res << 1) + cpu->status.i;
   res = (res << 1) + cpu->status.z;

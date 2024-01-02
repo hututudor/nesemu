@@ -95,14 +95,24 @@ address_mode_t cpu_address_mode_indirect(cpu_t* cpu) {
 address_mode_t cpu_address_mode_indirect_x(cpu_t* cpu) {
   address_mode_t address_mode = {0};
   u8 address = cpu_fetch8(cpu) + cpu->x;
-  address_mode.address = bus_read16(cpu->bus, address);
+
+  // wrap-around the zero page
+  u8 low = bus_read8(cpu->bus, address);
+  u8 high = bus_read8(cpu->bus, (address + 1) & 0xFF);
+
+  address_mode.address = high << 8 | low;
   return address_mode;
 }
 
 address_mode_t cpu_address_mode_indirect_y(cpu_t* cpu) {
   address_mode_t address_mode = {0};
   u8 address = cpu_fetch8(cpu);
-  u16 base_address = bus_read16(cpu->bus, address);
+
+  // wrap-around the zero page
+  u8 low = bus_read8(cpu->bus, address);
+  u8 high = bus_read8(cpu->bus, (address + 1) & 0xFF);
+  u16 base_address = high << 8 | low;
+
   address_mode.address = base_address + cpu->y;
 
   address_mode.extra_cycle =

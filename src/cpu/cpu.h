@@ -8,7 +8,8 @@ typedef struct {
   u8 z : 1;  // zero
   u8 i : 1;  // interrupt disable
   u8 d : 1;  // decimal
-  u8 unused : 2;
+  u8 unused : 1;
+  u8 b : 1;  // break
   u8 v : 1;  // overflow
   u8 n : 1;  // negative
 } cpu_status_flags_t;

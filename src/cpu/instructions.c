@@ -176,24 +176,25 @@ u8 cpu_adc(cpu_t* cpu, address_mode_t address_mode) {
 
   cpu_set_status_c(cpu, result);
   cpu_set_status_z(cpu, cpu->a);
-  cpu_set_status_v(cpu, cpu->a, previous_a, previous_result);
+  cpu_set_status_v(cpu, cpu->a, previous_a, value);
   cpu_set_status_n(cpu, cpu->a);
 
   return address_mode.extra_cycle;
 }
 
 u8 cpu_sbc(cpu_t* cpu, address_mode_t address_mode) {
-  u8 value = bus_read8(cpu->bus, address_mode.address);
+  u16 value = bus_read8(cpu->bus, address_mode.address);
+  value ^= 0x00FF;
 
   u8 previous_a = cpu->a;
-  u8 previous_result = value + (1 - cpu->status.c);
+  u8 previous_result = value + cpu->status.c;
 
-  u16 result = previous_a - previous_result;
+  u16 result = previous_a + previous_result;
   cpu->a = result;
 
   cpu_set_status_c(cpu, result);
   cpu_set_status_z(cpu, cpu->a);
-  cpu_set_status_v(cpu, cpu->a, previous_a, -previous_result);
+  cpu_set_status_v(cpu, cpu->a, previous_a, value);
   cpu_set_status_n(cpu, cpu->a);
 
   return address_mode.extra_cycle;
@@ -513,6 +514,7 @@ u8 cpu_brk(cpu_t* cpu, address_mode_t address_mode) {
   cpu_push8(cpu, cpu_get_status(cpu));
 
   cpu->pc = cpu_fetch_irq_vector(cpu);
+  cpu->status.b = 1;
 
   return 0;
 }

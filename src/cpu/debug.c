@@ -41,15 +41,15 @@ void cpu_debug_print_log(cpu_t* cpu) {
   u8 opcode = bus_read8(cpu->bus, cpu->pc);
   instruction_t instruction = instructions_table[opcode];
 
-  printf("%04X %02X ", cpu->pc, bus_read8(cpu->bus, cpu->pc));
+  printf("%04X  %02X ", cpu->pc, bus_read8(cpu->bus, cpu->pc));
 
   if (instruction.length == 2) {
-    printf("%02X    ", bus_read8(cpu->bus, cpu->pc + 1));
+    printf("%02X     ", bus_read8(cpu->bus, cpu->pc + 1));
   } else if (instruction.length == 3) {
-    printf("%02X %02X ", bus_read8(cpu->bus, cpu->pc + 1),
+    printf("%02X %02X  ", bus_read8(cpu->bus, cpu->pc + 1),
            bus_read8(cpu->bus, cpu->pc + 2));
   } else {
-    printf("      ");
+    printf("       ");
   }
 
   printf("A:%02X ", cpu->a);
