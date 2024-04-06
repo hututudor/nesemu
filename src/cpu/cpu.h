@@ -24,6 +24,7 @@ typedef struct cpu_t {
   cpu_status_flags_t status;
 
   u8 cycles;
+  u64 total_cycles;
   bus_t* bus;
 } cpu_t;
 

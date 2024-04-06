@@ -36,6 +36,10 @@ ppu_t* ppu_create() {
   ppu->scroll_x = 0;
   ppu->scroll_y = 0;
 
+  ppu->status.v_blank = 0;
+  ppu->status.sprite_0_hit = 0;
+  ppu->status.sprite_overflow = 0;
+
   return ppu;
 }
 
@@ -61,14 +65,14 @@ void ppu_destroy(ppu_t* ppu) {
 void ppu_clock(ppu_t* ppu) {
   ppu->cycle++;
 
-  if (ppu->cycle > 341) {
+  if (ppu->cycle >= 341) {
     ppu->cycle = 0;
     ppu->scan_line++;
     return;
   }
 
-  if (ppu->scan_line > 262) {
-    ppu->scan_line = 0;
+  if (ppu->scan_line >= 262) {
+    ppu->scan_line = -1;
   }
 
   // vblank set

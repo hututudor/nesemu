@@ -10,7 +10,8 @@ cpu_t* cpu_create() {
   load_instruction_table();
 
   cpu_t* cpu = (cpu_t*)calloc(1, sizeof(cpu_t));
-  cpu->cycles = 0;
+  cpu->cycles = 7;
+  cpu->total_cycles = 0;
 
   cpu->sp = 0xFD;
 
@@ -46,7 +47,7 @@ u8 cpu_execute(cpu_t* cpu) {
 
   if (!instruction.execute) {
     printf("[CPU] ILLEGAL INSTRUCTION REACHED: %02X (AT %04X)\n", opcode,
-           cpu->pc);
+           cpu->pc - 1);
 
     fflush(stdout);
 
@@ -58,6 +59,8 @@ u8 cpu_execute(cpu_t* cpu) {
 }
 
 void cpu_clock(cpu_t* cpu) {
+  cpu->total_cycles++;
+
   if (cpu->cycles > 0) {
     cpu->cycles--;
     return;
@@ -67,7 +70,6 @@ void cpu_clock(cpu_t* cpu) {
   // printf("\n");
 
   // cpu_debug_print_log(cpu);
-  // printf("\n");
 
   cpu->cycles += cpu_execute(cpu) - 1;
 }
@@ -120,7 +122,7 @@ u8 cpu_get_status(cpu_t* cpu) {
 
   res = (res << 1) + cpu->status.n;
   res = (res << 1) + cpu->status.v;
-  res = (res << 1) + 1;
+  res = (res << 1) + 0;
   res = (res << 1) + cpu->status.b;
   res = (res << 1) + cpu->status.d;
   res = (res << 1) + cpu->status.i;

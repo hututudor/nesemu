@@ -9,6 +9,7 @@
 typedef struct ppu_t {
   s16 scan_line;
   s16 cycle;
+  u8 odd_frame;
 
   struct {
     u8 base_nametable_address : 2;
