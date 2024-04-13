@@ -6,6 +6,9 @@
 
 #define SCREEN_SCALE 3
 
+#define TARGET_FPS 60
+#define TITLE_UPDATE_INTERVAL 500
+
 bool window_is_running;
 
 SDL_Window* window = NULL;
@@ -13,6 +16,7 @@ SDL_Renderer* renderer = NULL;
 SDL_Texture* screen_texture = NULL;
 
 u32 start_time;
+u32 title_updated_time;
 
 SDL_Event e;
 
@@ -42,6 +46,7 @@ void window_init() {
   }
 
   window_is_running = true;
+  start_time = SDL_GetTicks();
 
   screen_init();
 }
@@ -64,21 +69,26 @@ void window_destroy() {
 
 static void update_fps() {
   u32 frame_time = SDL_GetTicks() - start_time;
+
+  if (frame_time < (1000.0f / TARGET_FPS)) {
+    SDL_Delay((1000.0f / TARGET_FPS) - frame_time);
+    frame_time = SDL_GetTicks() - start_time;
+  }
+
+  u32 fps = 1000.0f / frame_time;
+
   start_time = SDL_GetTicks();
 
-  // if (frame_time < 1000 / 60) {
-  //   SDL_Delay((1000 / 60) - frame_time);
-  // }
+  if (SDL_GetTicks() - title_updated_time < TITLE_UPDATE_INTERVAL) {
+    return;
+  }
 
-  // frame_time = SDL_GetTicks() - start_time;
+  title_updated_time = SDL_GetTicks();
 
-  // printf("FPS: %d\n", frame_time);
-
-  // char* title = malloc(256);
-  // sprintf(title, "FPS: %f", 1000.0f / frame_time);
-  // printf("%s\n", title);
-  // SDL_SetWindowTitle(window, title);
-  // free(title);
+  char* title = malloc(256);
+  sprintf(title, "FPS: %d", fps);
+  SDL_SetWindowTitle(window, title);
+  free(title);
 }
 
 static void render_screen() {
