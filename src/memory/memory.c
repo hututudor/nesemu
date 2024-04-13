@@ -43,7 +43,7 @@ u8 memory_read8(memory_t* memory, u16 address) {
 }
 
 void memory_write8(memory_t* memory, u16 address, u8 value) {
-  if (address > memory->end) {
+  if (address > memory->size) {
     ASSERT_UNREACHABLE;
   }
 
