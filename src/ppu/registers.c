@@ -37,7 +37,7 @@ u8 ppu_read_status(ppu_t* ppu) {
   res <<= 5;
 
   ppu->status.v_blank = 0;
-  ppu->latch_low = 0;
+  ppu->latch_high = 0;
 
   return res;
 }
@@ -52,25 +52,25 @@ void ppu_write_oam_data(ppu_t* ppu, u8 value) {}
 
 u8 ppu_read_scroll(ppu_t* ppu) { return 0x00; }
 void ppu_write_scroll(ppu_t* ppu, u8 value) {
-  if (ppu->latch_low == 0) {
+  if (ppu->latch_high == 0) {
     ppu->scroll_x = value;
-    ppu->latch_low = 1;
+    ppu->latch_high = 1;
   } else {
     ppu->scroll_y = value;
-    ppu->latch_low = 0;
+    ppu->latch_high = 0;
   }
 }
 
 u8 ppu_read_addr(ppu_t* ppu) { return 0x00; }
 void ppu_write_addr(ppu_t* ppu, u8 value) {
-  if (ppu->latch_low == 0) {
+  if (ppu->latch_high == 0) {
     ppu->latch_address &= 0x00FF;
     ppu->latch_address |= ((u16)value) << 8;
-    ppu->latch_low = 1;
+    ppu->latch_high = 1;
   } else {
     ppu->latch_address &= 0xFF00;
     ppu->latch_address |= value;
-    ppu->latch_low = 0;
+    ppu->latch_high = 0;
   }
 }
 

@@ -50,7 +50,7 @@ int main(int argv, char** argc) {
   window_init();
 
   while (window_is_running) {
-    window_update();
+    window_update(nes);
     keys_update();
 
     for (int i = 0; i < PPU_CYCLES_PER_FRAME; i++) {

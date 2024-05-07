@@ -122,7 +122,7 @@ u8 cpu_get_status(cpu_t* cpu) {
 
   res = (res << 1) + cpu->status.n;
   res = (res << 1) + cpu->status.v;
-  res = (res << 1) + 0;
+  res = (res << 1) + 1;
   res = (res << 1) + cpu->status.b;
   res = (res << 1) + cpu->status.d;
   res = (res << 1) + cpu->status.i;

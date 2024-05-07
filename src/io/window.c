@@ -1,10 +1,7 @@
 #include "window.h"
 
-#include <SDL2/SDL.h>
-
 #include "../peripherals/screen.h"
-
-#define SCREEN_SCALE 3
+#include "window_debug.h"
 
 #define TARGET_FPS 60
 #define TITLE_UPDATE_INTERVAL 500
@@ -26,9 +23,9 @@ void window_init() {
     return;
   }
 
-  window = SDL_CreateWindow("NESEMU", SDL_WINDOWPOS_CENTERED,
-                            SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH * SCREEN_SCALE,
-                            SCREEN_HEIGHT * SCREEN_SCALE, 0);
+  window =
+      SDL_CreateWindow("NESEMU", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                       WINDOW_WIDTH, WINDOW_HEIGHT, 0);
   if (!window) {
     perror("Could not init SDL window\n");
   }
@@ -49,9 +46,17 @@ void window_init() {
   start_time = SDL_GetTicks();
 
   screen_init();
+
+#if DEBUG_MODE
+  debug_screen_init();
+#endif
 }
 
 void window_destroy() {
+#if DEBUG_MODE
+  debug_screen_destroy();
+#endif
+
   if (screen_texture) {
     SDL_DestroyTexture(screen_texture);
   }
@@ -93,16 +98,32 @@ static void update_fps() {
 
 static void render_screen() {
   SDL_UpdateTexture(screen_texture, NULL, screen, sizeof(u32) * SCREEN_WIDTH);
-  SDL_RenderCopy(renderer, screen_texture, NULL, NULL);
+
+  SDL_Rect dest_rect;
+
+  dest_rect.x = 0;
+  dest_rect.y = 0;
+  dest_rect.w = UPSCALED_SCREEN_WIDTH;
+  dest_rect.h = UPSCALED_SCREEN_HEIGHT;
+
+  SDL_RenderCopy(renderer, screen_texture, NULL, &dest_rect);
   SDL_RenderPresent(renderer);
 }
 
-void window_update() {
+void window_update(nes_t* nes) {
   while (SDL_PollEvent(&e) != 0) {
     if (e.type == SDL_QUIT) {
       window_is_running = false;
     }
+
+#if DEBUG_MODE
+    debug_screen_process_event(&e);
+#endif
   }
+
+#if DEBUG_MODE
+  debug_screen_update(nes);
+#endif
 
   render_screen();
   update_fps();

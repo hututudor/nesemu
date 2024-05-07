@@ -12,7 +12,7 @@ SRC = src/memory/memory.c src/memory/bus.c \
 			src/mappers/mapper.c src/mappers/mapper_0.c \
 			src/cpu/cpu.c src/cpu/debug.c src/cpu/instructions.c src/cpu/instructions_table.c src/cpu/address_modes.c \
 			src/ppu/ppu.c src/ppu/registers.c src/ppu/rendering.c\
-			src/io/window.c src/io/input.c \
+			src/io/window.c src/io/window_debug.c src/io/input.c \
 
 TEST_OUT = build/test
 TEST_MAIN = test/main.c

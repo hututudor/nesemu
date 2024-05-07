@@ -38,7 +38,7 @@ typedef struct ppu_t {
     u8 v_blank : 1;
   } status;
 
-  u8 latch_low;
+  u8 latch_high;
   u16 latch_address;
   u8 data_buffer;
 

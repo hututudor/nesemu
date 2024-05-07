@@ -30,7 +30,7 @@ ppu_t* ppu_create() {
   ppu->scan_line = 0;
   ppu->cycle = 0;
 
-  ppu->latch_low = 0;
+  ppu->latch_high = 0;
   ppu->latch_address = 0;
 
   ppu->scroll_x = 0;
@@ -87,7 +87,7 @@ void ppu_clock(ppu_t* ppu) {
   }
 
   // vblank reset
-  if (ppu->scan_line == 0 && ppu->cycle == 0) {
+  if (ppu->scan_line == -1 && ppu->cycle == 1) {
     ppu->status.v_blank = 0;
   }
 
