@@ -6,7 +6,7 @@
 
 extern mapper_config_t mapper_0;
 
-mapper_config_t* mappers[MAPPERS_COUNT] = {&mapper_0};
+mapper_config_t* mappers[MAPPERS_COUNT] = {&mapper_0, NULL, NULL, &mapper_0};
 
 bool mapper_is_available(u8 mapper_number) {
   return mappers[mapper_number] != NULL;

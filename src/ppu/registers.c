@@ -96,6 +96,30 @@ void ppu_write_data(ppu_t* ppu, u8 value) {
   ppu->latch_address += (ppu->ctrl.vram_increment ? 32 : 1);
 }
 
+static u16 ppu_get_nametable_mirrored_address(ppu_t* ppu, u16 address) {
+  if (ppu->bus->mapper->rom->header.mirroring == MIRRORING_HORIZONTAL) {
+    if (address >= 0x2400 && address < 0x2800) {
+      return address - 0x400;
+    }
+
+    if (address >= 0x2C00 && address < 0x3000) {
+      return address - 0x400;
+    }
+  }
+
+  if (ppu->bus->mapper->rom->header.mirroring == MIRRORING_VERTICAL) {
+    if (address >= 0x2800 && address < 0x2C00) {
+      return address - 0x800;
+    }
+
+    if (address >= 0x2C00 && address < 0x3000) {
+      return address - 0x800;
+    }
+  }
+
+  return address;
+}
+
 u8 ppu_read8(ppu_t* ppu, u16 address) {
   switch (address & 0x07) {
     case 0x00:
@@ -153,8 +177,14 @@ u8 ppu_internal_read8(ppu_t* ppu, u16 address) {
     return ppu->bus->mapper->chr_read8(ppu->bus->mapper, address);
   }
 
+  if (address < 0x3000) {
+    u16 real_address = ppu_get_nametable_mirrored_address(ppu, address);
+    return memory_read8(ppu->nametable_memory, real_address - 0x2000);
+  }
+
   if (address < 0x3F00) {
-    return memory_read8(ppu->nametable_memory, address - 0x2000);
+    printf("Invalid ppu_internal_read8 with address %04X\n", address);
+    return;
   }
 
   return memory_read8(ppu->palette_memory, address - 0x3F00);
@@ -168,8 +198,15 @@ void ppu_internal_write8(ppu_t* ppu, u16 address, u8 value) {
     return;
   }
 
+  if (address < 0x3000) {
+    u16 real_address = ppu_get_nametable_mirrored_address(ppu, address);
+    memory_write8(ppu->nametable_memory, real_address - 0x2000, value);
+    return;
+  }
+
   if (address < 0x3F00) {
-    memory_write8(ppu->nametable_memory, address - 0x2000, value);
+    printf("Invalid ppu_internal_read8 with address %04X and value %02X\n",
+           address, value);
     return;
   }
 

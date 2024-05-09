@@ -3,12 +3,29 @@
 #include "../peripherals/screen.h"
 
 static u8 palettes_index = 0;
+static bool show_scroll_marker = true;
 
 void debug_screen_init() {}
 
 void debug_screen_destroy() {}
 
-void debug_screen_process_event(SDL_Event* e) {
+static void debug_print_cpu_address8(nes_t* nes, u16 address) {
+  printf("[cpu_address] %04X = %02X\n", address, bus_read8(nes->bus, address));
+}
+
+static void debug_print_cpu_address16(nes_t* nes, u16 address) {
+  printf("[cpu_address] %04X = %04X\n", address, bus_read16(nes->bus, address));
+}
+
+static void debug_print_log(nes_t* nes) {
+  printf("PC: %04X\n", nes->cpu->pc);
+
+  debug_print_cpu_address8(nes, 0x0000);
+  debug_print_cpu_address8(nes, 0x0001);
+  debug_print_cpu_address8(nes, 0x0002);
+}
+
+void debug_screen_process_event(nes_t* nes, SDL_Event* e) {
   if (e->type == SDL_KEYDOWN) {
     switch (e->key.keysym.sym) {
       case SDLK_LEFTBRACKET:
@@ -16,6 +33,12 @@ void debug_screen_process_event(SDL_Event* e) {
         break;
       case SDLK_RIGHTBRACKET:
         palettes_index = (u8)(palettes_index + 1) % 8;
+        break;
+      case SDLK_l:
+        debug_print_log(nes);
+        break;
+      case SDLK_m:
+        show_scroll_marker = !show_scroll_marker;
         break;
     }
   }
@@ -157,20 +180,6 @@ static void render_nametable(nes_t* nes, u16 address, u32 x, u32 y) {
       }
     }
   }
-  // SDL_Rect color_rect;
-
-  // color_rect.x = x;
-  // color_rect.y = y;
-  // color_rect.w = 256;
-  // color_rect.h = 240;
-
-  // u8 color_index = ppu_internal_read8(
-  //     nes->ppu, get_palette_real_address(0x3F00 + palettes_index + 4 + x %
-  //     4));
-  // color_t color = palette_colors[color_index];
-
-  // SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-  // SDL_RenderFillRect(renderer, &color_rect);
 }
 
 static void render_pallettes(nes_t* nes) {
@@ -189,14 +198,6 @@ static void render_pattern_tables(nes_t* nes) {
 static void render_nametables(nes_t* nes) {
   u16 nametable_addresses[4] = {0x2000, 0x2400, 0x2800, 0x2C00};
 
-  if (nes->mapper->rom->header.mirroring == MIRRORING_HORIZONTAL) {
-    nametable_addresses[2] = 0x2000;
-    nametable_addresses[3] = 0x2400;
-  } else if (nes->mapper->rom->header.mirroring == MIRRORING_VERTICAL) {
-    nametable_addresses[1] = 0x2000;
-    nametable_addresses[3] = 0x2400;
-  }
-
   render_nametable(nes, nametable_addresses[0], UPSCALED_SCREEN_WIDTH + 32,
                    384);
   render_nametable(nes, nametable_addresses[1], UPSCALED_SCREEN_WIDTH + 288,
@@ -205,6 +206,19 @@ static void render_nametables(nes_t* nes) {
                    624);
   render_nametable(nes, nametable_addresses[3], UPSCALED_SCREEN_WIDTH + 288,
                    624);
+
+  if (show_scroll_marker) {
+    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+
+    SDL_Rect scroll_marker_rect;
+
+    scroll_marker_rect.x = UPSCALED_SCREEN_WIDTH + 32 + nes->ppu->scroll_x;
+    scroll_marker_rect.y = 384 + nes->ppu->scroll_y;
+    scroll_marker_rect.w = 256;
+    scroll_marker_rect.h = 240;
+
+    SDL_RenderDrawRect(renderer, &scroll_marker_rect);
+  }
 }
 
 void debug_screen_update(nes_t* nes) {

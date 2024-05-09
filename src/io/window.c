@@ -117,7 +117,7 @@ void window_update(nes_t* nes) {
     }
 
 #if DEBUG_MODE
-    debug_screen_process_event(&e);
+    debug_screen_process_event(nes, &e);
 #endif
   }
 
