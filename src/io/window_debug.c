@@ -18,11 +18,10 @@ static void debug_print_cpu_address16(nes_t* nes, u16 address) {
 }
 
 static void debug_print_log(nes_t* nes) {
-  printf("PC: %04X\n", nes->cpu->pc);
-
-  debug_print_cpu_address8(nes, 0x0000);
-  debug_print_cpu_address8(nes, 0x0001);
-  debug_print_cpu_address8(nes, 0x0002);
+  for (int i = 0; i < 64; i++) {
+    printf("SPRITE (%d, %d) ID = %02X ATTRIBUTE = %02X\n", nes->ppu->oam[i].x,
+           nes->ppu->oam[i].y, nes->ppu->oam[i].id, nes->ppu->oam[i].attribute);
+  }
 }
 
 void debug_screen_process_event(nes_t* nes, SDL_Event* e) {
@@ -109,7 +108,8 @@ static void render_pattern_table(nes_t* nes, u16 address, u32 x, u32 y) {
           u8 color_index = ppu_internal_read8(
               nes->ppu, get_palette_real_address(0x3F00 + palettes_index * 4 +
                                                  palette_index));
-          color_t color = palette_colors[color_index];
+
+          color_t color = screen_get_palette_color(color_index);
 
           SDL_Rect color_rect;
 
@@ -212,12 +212,89 @@ static void render_nametables(nes_t* nes) {
 
     SDL_Rect scroll_marker_rect;
 
-    scroll_marker_rect.x = UPSCALED_SCREEN_WIDTH + 32 + nes->ppu->scroll_x;
-    scroll_marker_rect.y = 384 + nes->ppu->scroll_y;
+    scroll_marker_rect.x = UPSCALED_SCREEN_WIDTH + 32 +
+                           (u16)nes->ppu->tram_address.nametable_x * 256 +
+                           ((u16)nes->ppu->tram_address.coarse_x << 3) +
+                           nes->ppu->fine_x;
+    scroll_marker_rect.y = 384 + (u16)nes->ppu->tram_address.nametable_y * 240 +
+                           ((u16)nes->ppu->tram_address.coarse_y << 3) +
+                           nes->ppu->tram_address.fine_y;
     scroll_marker_rect.w = 256;
     scroll_marker_rect.h = 240;
 
     SDL_RenderDrawRect(renderer, &scroll_marker_rect);
+  }
+}
+
+static void render_sprite(nes_t* nes, int i) {
+  u8 x = nes->ppu->oam[i].x;
+  u8 y = nes->ppu->oam[i].y;
+  u8 id = nes->ppu->oam[i].id;
+  u8 attribute = nes->ppu->oam[i].attribute;
+
+  if (y >= 240) {
+    return;
+  }
+
+  for (int row = 0; row < 8; row++) {
+    if (y + row >= 240) {
+      continue;
+    }
+
+    u8 pattern_low = ppu_internal_read8(nes->ppu, id * 16 + row);
+    u8 pattern_high = ppu_internal_read8(nes->ppu, id * 16 + row + 8);
+
+    for (int col = 0; col < 8; col++) {
+      if ((u16)x + (u16)col >= 256) {
+        continue;
+      }
+
+      if (nes->ppu->mask.show_sprites_leftmost_8px == 0 && x + col < 8) {
+        continue;
+      }
+
+      bool is_x_flipped = attribute & 0x40;
+      u8 pattern_byte = is_x_flipped ? col : 7 - col;
+
+      u8 palette_index = (((pattern_high >> pattern_byte) & 0x01) << 1) |
+                         ((pattern_low >> pattern_byte) & 0x01);
+
+      u8 color_index = ppu_internal_read8(
+          nes->ppu,
+          get_palette_real_address(0x3F00 + ((attribute & 0x03) << 2) + 0x10 +
+                                   palette_index));
+
+      color_t color = palette_colors[color_index];
+
+      SDL_Rect color_rect;
+
+      color_rect.x = 32 + x + col;
+      color_rect.y = UPSCALED_SCREEN_HEIGHT + 32 + y + row;
+      color_rect.w = 1;
+      color_rect.h = 1;
+
+      SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+      SDL_RenderFillRect(renderer, &color_rect);
+    }
+  }
+}
+
+static void render_sprites(nes_t* nes) {
+  u8 bg_color_index = ppu_internal_read8(nes->ppu, 0x3F00);
+  color_t bg_color = palette_colors[bg_color_index];
+
+  SDL_Rect bg_rect;
+
+  bg_rect.x = 32;
+  bg_rect.y = UPSCALED_SCREEN_HEIGHT + 32;
+  bg_rect.w = 256;
+  bg_rect.h = 240;
+
+  SDL_SetRenderDrawColor(renderer, bg_color.r, bg_color.g, bg_color.b, 256);
+  SDL_RenderFillRect(renderer, &bg_rect);
+
+  for (int i = 0; i < 64; i++) {
+    render_sprite(nes, i);
   }
 }
 
@@ -230,4 +307,5 @@ void debug_screen_update(nes_t* nes) {
   render_pallettes(nes);
   render_pattern_tables(nes);
   render_nametables(nes);
+  render_sprites(nes);
 }

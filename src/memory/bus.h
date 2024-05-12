@@ -15,6 +15,13 @@ typedef struct {
   controller_t* controller_1;
   controller_t* controller_2;
   mapper_t* mapper;
+
+  bool dma_transfer;
+  bool dma_skip_odd_cycle;
+
+  u8 dma_page;
+  u8 dma_address;
+  u8 dma_data;
 } bus_t;
 
 typedef struct {

@@ -39,16 +39,44 @@ void nes_destroy(nes_t* nes) {
   free(nes);
 }
 
+static void nes_handle_dma_transfer(nes_t* nes) {
+  if (nes->bus->dma_skip_odd_cycle) {
+    if (nes->cycles % 2 == 1) {
+      nes->bus->dma_skip_odd_cycle = false;
+    }
+
+    return;
+  }
+
+  if (nes->cycles % 2 == 0) {
+    nes->bus->dma_data =
+        bus_read8(nes->bus, nes->bus->dma_page << 8 | nes->bus->dma_address);
+    return;
+  }
+
+  nes->ppu->oam_pointer[nes->bus->dma_address] = nes->bus->dma_data;
+  nes->bus->dma_address++;
+
+  if (nes->bus->dma_address == 0x00) {
+    nes->bus->dma_transfer = false;
+    nes->bus->dma_skip_odd_cycle = true;
+  }
+}
+
 void nes_clock(nes_t* nes) {
   // TODO: any performance impact for updating controller on every clock?
   controller_update(nes->controller_1);
   controller_update(nes->controller_2);
 
-  if (nes->cycles % 3 == 0) {
-    cpu_clock(nes->cpu);
-  }
-
   ppu_clock(nes->ppu);
+
+  if (nes->cycles % 3 == 0) {
+    if (nes->bus->dma_transfer) {
+      nes_handle_dma_transfer(nes);
+    } else {
+      cpu_clock(nes->cpu);
+    }
+  }
 
   nes->cycles++;
 }

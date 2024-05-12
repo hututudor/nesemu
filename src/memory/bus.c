@@ -18,6 +18,13 @@ bus_t* bus_create(mapper_t* mapper, cpu_t* cpu, ppu_t* ppu,
   bus->controller_2 = controller_2;
   bus->mapper = mapper;
 
+  bus->dma_transfer = false;
+  bus->dma_skip_odd_cycle = false;
+
+  bus->dma_page = 0;
+  bus->dma_address = 0;
+  bus->dma_data = 0;
+
   return bus;
 }
 
@@ -76,6 +83,13 @@ void bus_write8(bus_t* bus, u16 address, u8 value) {
 
   if (address >= 0x2000 && address <= 0x3FFF) {
     ppu_write8(bus->ppu, address - 0x2000, value);
+    return;
+  }
+
+  if (address == 0x4014) {
+    bus->dma_transfer = true;
+    bus->dma_page = value;
+    bus->dma_address = 0;
     return;
   }
 

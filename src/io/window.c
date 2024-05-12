@@ -35,7 +35,7 @@ void window_init() {
     perror("Could not init SDL renderer\n");
   }
 
-  screen_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
+  screen_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ABGR8888,
                                      SDL_TEXTUREACCESS_STREAMING, SCREEN_WIDTH,
                                      SCREEN_HEIGHT);
   if (!screen_texture) {

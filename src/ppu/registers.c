@@ -10,6 +10,9 @@ void ppu_write_ctrl(ppu_t* ppu, u8 value) {
   ppu->ctrl.sprite_size = (value >> 5) & 0x01;
   ppu->ctrl.master_slave_select = (value >> 6) & 0x01;
   ppu->ctrl.generate_nmi = (value >> 7) & 0x01;
+
+  ppu->tram_address.nametable_x = (value >> 0) & 0x01;
+  ppu->tram_address.nametable_y = (value >> 1) & 0x01;
 }
 
 u8 ppu_read_mask(ppu_t* ppu) { return 0x00; }
@@ -45,55 +48,63 @@ u8 ppu_read_status(ppu_t* ppu) {
 void ppu_write_status(ppu_t* ppu, u8 value) {}
 
 u8 ppu_read_oam_addr(ppu_t* ppu) { return 0x00; }
-void ppu_write_oam_addr(ppu_t* ppu, u8 value) {}
+void ppu_write_oam_addr(ppu_t* ppu, u8 value) { ppu->oam_address = value; }
 
-u8 ppu_read_oam_data(ppu_t* ppu) { return 0x00; }
-void ppu_write_oam_data(ppu_t* ppu, u8 value) {}
+u8 ppu_read_oam_data(ppu_t* ppu) { return ppu->oam_pointer[ppu->oam_address]; }
+void ppu_write_oam_data(ppu_t* ppu, u8 value) {
+  ppu->oam_pointer[ppu->oam_address] = value;
+}
 
 u8 ppu_read_scroll(ppu_t* ppu) { return 0x00; }
 void ppu_write_scroll(ppu_t* ppu, u8 value) {
   if (ppu->latch_high == 0) {
-    ppu->scroll_x = value;
     ppu->latch_high = 1;
+
+    ppu->fine_x = value & 0x07;
+    ppu->tram_address.coarse_x = value >> 3;
   } else {
-    ppu->scroll_y = value;
     ppu->latch_high = 0;
+
+    ppu->tram_address.fine_y = value & 0x07;
+    ppu->tram_address.coarse_y = value >> 3;
   }
 }
 
 u8 ppu_read_addr(ppu_t* ppu) { return 0x00; }
 void ppu_write_addr(ppu_t* ppu, u8 value) {
   if (ppu->latch_high == 0) {
-    ppu->latch_address &= 0x00FF;
-    ppu->latch_address |= ((u16)value) << 8;
+    ppu->tram_address.reg &= 0x00FF;
+    ppu->tram_address.reg |= ((u16)value) << 8;
     ppu->latch_high = 1;
   } else {
-    ppu->latch_address &= 0xFF00;
-    ppu->latch_address |= value;
+    ppu->tram_address.reg &= 0xFF00;
+    ppu->tram_address.reg |= value;
     ppu->latch_high = 0;
+
+    ppu->vram_address.reg = ppu->tram_address.reg;
   }
 }
 
 u8 ppu_read_data(ppu_t* ppu) {
-  u8 value = ppu_internal_read8(ppu, ppu->latch_address);
+  u8 value = ppu_internal_read8(ppu, ppu->vram_address.reg);
 
   u8 res = 0;
-  if (ppu->latch_address < 0x3F00) {
+  if (ppu->vram_address.reg < 0x3F00) {
     res = ppu->data_buffer;
   } else {
     res = value;
   }
 
   ppu->data_buffer = value;
-  ppu->latch_address += (ppu->ctrl.vram_increment ? 32 : 1);
+  ppu->vram_address.reg += (ppu->ctrl.vram_increment ? 32 : 1);
 
   return res;
 }
 
 void ppu_write_data(ppu_t* ppu, u8 value) {
-  ppu_internal_write8(ppu, ppu->latch_address & 0x3FFF, value);
+  ppu_internal_write8(ppu, ppu->vram_address.reg & 0x3FFF, value);
 
-  ppu->latch_address += (ppu->ctrl.vram_increment ? 32 : 1);
+  ppu->vram_address.reg += (ppu->ctrl.vram_increment ? 32 : 1);
 }
 
 static u16 ppu_get_nametable_mirrored_address(ppu_t* ppu, u16 address) {
@@ -182,9 +193,9 @@ u8 ppu_internal_read8(ppu_t* ppu, u16 address) {
     return memory_read8(ppu->nametable_memory, real_address - 0x2000);
   }
 
-  if (address < 0x3F00) {
+  if (address < 0x3F00 || address > 0x3FFF) {
     printf("Invalid ppu_internal_read8 with address %04X\n", address);
-    return;
+    return 0;
   }
 
   return memory_read8(ppu->palette_memory, address - 0x3F00);
@@ -204,7 +215,7 @@ void ppu_internal_write8(ppu_t* ppu, u16 address, u8 value) {
     return;
   }
 
-  if (address < 0x3F00) {
+  if (address < 0x3F00 || address > 0x3FFF) {
     printf("Invalid ppu_internal_read8 with address %04X and value %02X\n",
            address, value);
     return;

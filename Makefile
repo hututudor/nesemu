@@ -19,10 +19,12 @@ TEST_MAIN = test/main.c
 TEST_SRC = $(SRC)
 
 # ROM = roms/nestest.nes
+# ROM = roms/hello.nes
 # ROM = roms/test/cpu_dummy_reads/cpu_dummy_reads.nes
-# ROM = roms/ice_climber.nes
+ROM = roms/ice_climber.nes
+# ROM = roms/super_mario_bros.nes
 # ROM = roms/donkey.nes
-ROM = roms/tetris_mapper0.nes
+# ROM = roms/tetris_mapper0.nes
 
 all: build
 
