@@ -1,8 +1,7 @@
 #include "window.h"
 
-#include <SDL2/SDL.h>
-
 #include "../peripherals/screen.h"
+#include "../utils/sdl.h"
 
 #define SCREEN_SCALE 3
 
