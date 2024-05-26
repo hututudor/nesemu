@@ -90,9 +90,9 @@ u8 ppu_read_data(ppu_t* ppu) {
 
   u8 res = 0;
   if (ppu->vram_address.reg < 0x3F00) {
-    res = value;
-  } else {
     res = ppu->data_buffer;
+  } else {
+    res = value;
   }
 
   ppu->data_buffer = value;
