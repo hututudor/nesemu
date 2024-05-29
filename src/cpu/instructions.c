@@ -169,9 +169,9 @@ u8 cpu_adc(cpu_t* cpu, address_mode_t address_mode) {
   u8 value = bus_read8(cpu->bus, address_mode.address);
 
   u8 previous_a = cpu->a;
-  u8 previous_result = value + cpu->status.c;
+  u16 previous_result = (u16)value + (u16)cpu->status.c;
 
-  u16 result = previous_a + previous_result;
+  u16 result = (u16)previous_a + previous_result;
   cpu->a = result;
 
   cpu_set_status_c(cpu, result);
@@ -187,9 +187,9 @@ u8 cpu_sbc(cpu_t* cpu, address_mode_t address_mode) {
   value ^= 0x00FF;
 
   u8 previous_a = cpu->a;
-  u8 previous_result = value + cpu->status.c;
+  u16 previous_result = value + cpu->status.c;
 
-  u16 result = previous_a + previous_result;
+  u16 result = (u16)previous_a + previous_result;
   cpu->a = result;
 
   cpu_set_status_c(cpu, result);
