@@ -1,7 +1,5 @@
 #pragma once
 
-#include <SDL2/SDL.h>
-
 #include "../config/globals.h"
 #include "../nes/nes.h"
 #include "../utils/types.h"
