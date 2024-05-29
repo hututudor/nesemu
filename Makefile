@@ -12,13 +12,19 @@ SRC = src/memory/memory.c src/memory/bus.c \
 			src/mappers/mapper.c src/mappers/mapper_0.c \
 			src/cpu/cpu.c src/cpu/debug.c src/cpu/instructions.c src/cpu/instructions_table.c src/cpu/address_modes.c \
 			src/ppu/ppu.c src/ppu/registers.c src/ppu/rendering.c\
-			src/io/window.c src/io/input.c \
+			src/io/window.c src/io/window_debug.c src/io/input.c \
 
 TEST_OUT = build/test
 TEST_MAIN = test/main.c
 TEST_SRC = $(SRC)
 
-ROM = roms/nestest.nes
+# ROM = roms/nestest.nes
+# ROM = roms/hello.nes
+# ROM = roms/test/cpu_dummy_reads/cpu_dummy_reads.nes
+ROM = roms/ice_climber.nes
+# ROM = roms/super_mario_bros.nes
+# ROM = roms/donkey.nes
+# ROM = roms/tetris_mapper0.nes
 
 all: build
 

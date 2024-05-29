@@ -212,4 +212,12 @@ void load_instruction_table() {
   INSTRUCTION(0x8A, "TXA", cpu_txa, cpu_address_mode_implied, 1, 2);
   INSTRUCTION(0x9A, "TXS", cpu_txs, cpu_address_mode_implied, 1, 2);
   INSTRUCTION(0x98, "TYA", cpu_tya, cpu_address_mode_implied, 1, 2);
+
+  // illegal instructions
+  // INSTRUCTION(0x1A, "NOP *", cpu_nop, cpu_address_mode_implied, 1, 2);
+  // INSTRUCTION(0x3A, "NOP *", cpu_nop, cpu_address_mode_implied, 1, 2);
+  // INSTRUCTION(0x5A, "NOP *", cpu_nop, cpu_address_mode_implied, 1, 2);
+  // INSTRUCTION(0x7A, "NOP *", cpu_nop, cpu_address_mode_implied, 1, 2);
+  // INSTRUCTION(0xDA, "NOP *", cpu_nop, cpu_address_mode_implied, 1, 2);
+  // INSTRUCTION(0xFA, "NOP *", cpu_nop, cpu_address_mode_implied, 1, 2);
 }

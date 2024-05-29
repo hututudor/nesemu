@@ -633,7 +633,7 @@ TEST_BEGIN(should_execute_sbc_immediate) {
 
   cpu_execute(cpu);
   ASSERT(cpu->a == 0x00);
-  ASSERT(cpu->status.c == 0);
+  ASSERT(cpu->status.c == 1);
   ASSERT(cpu->status.n == 0);
   ASSERT(cpu->status.z == 1);
   ASSERT(cpu->status.v == 0);
@@ -653,7 +653,7 @@ TEST_BEGIN(should_execute_sbc_zp) {
 
   cpu_execute(cpu);
   ASSERT(cpu->a == 0x00);
-  ASSERT(cpu->status.c == 0);
+  ASSERT(cpu->status.c == 1);
   ASSERT(cpu->status.n == 0);
   ASSERT(cpu->status.z == 1);
   ASSERT(cpu->status.v == 0);
@@ -674,7 +674,7 @@ TEST_BEGIN(should_execute_sbc_zp_x) {
 
   cpu_execute(cpu);
   ASSERT(cpu->a == 0x00);
-  ASSERT(cpu->status.c == 0);
+  ASSERT(cpu->status.c == 1);
   ASSERT(cpu->status.n == 0);
   ASSERT(cpu->status.z == 1);
   ASSERT(cpu->status.v == 0);
@@ -694,7 +694,7 @@ TEST_BEGIN(should_execute_sbc_absolute) {
 
   cpu_execute(cpu);
   ASSERT(cpu->a == 0x00);
-  ASSERT(cpu->status.c == 0);
+  ASSERT(cpu->status.c == 1);
   ASSERT(cpu->status.n == 0);
   ASSERT(cpu->status.z == 1);
   ASSERT(cpu->status.v == 0);
@@ -715,7 +715,7 @@ TEST_BEGIN(should_execute_sbc_absolute_x) {
 
   cpu_execute(cpu);
   ASSERT(cpu->a == 0x00);
-  ASSERT(cpu->status.c == 0);
+  ASSERT(cpu->status.c == 1);
   ASSERT(cpu->status.n == 0);
   ASSERT(cpu->status.z == 1);
   ASSERT(cpu->status.v == 0);
@@ -736,7 +736,7 @@ TEST_BEGIN(should_execute_sbc_absolute_y) {
 
   cpu_execute(cpu);
   ASSERT(cpu->a == 0x00);
-  ASSERT(cpu->status.c == 0);
+  ASSERT(cpu->status.c == 1);
   ASSERT(cpu->status.n == 0);
   ASSERT(cpu->status.z == 1);
   ASSERT(cpu->status.v == 0);
@@ -758,7 +758,7 @@ TEST_BEGIN(should_execute_sbc_indirect_x) {
 
   cpu_execute(cpu);
   ASSERT(cpu->a == 0x00);
-  ASSERT(cpu->status.c == 0);
+  ASSERT(cpu->status.c == 1);
   ASSERT(cpu->status.n == 0);
   ASSERT(cpu->status.z == 1);
   ASSERT(cpu->status.v == 0);
@@ -780,7 +780,7 @@ TEST_BEGIN(should_execute_sbc_indirect_y) {
 
   cpu_execute(cpu);
   ASSERT(cpu->a == 0x00);
-  ASSERT(cpu->status.c == 0);
+  ASSERT(cpu->status.c == 1);
   ASSERT(cpu->status.n == 0);
   ASSERT(cpu->status.z == 1);
   ASSERT(cpu->status.v == 0);

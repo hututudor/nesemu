@@ -5,3 +5,4 @@ frames
 !test/roms
 
 .vscode
+*.log

@@ -4,6 +4,9 @@
 #include "cpu.h"
 #include "instructions_table.h"
 
+#define CPU_DEBUG_FILE "cpu.log"
+FILE* cpu_debug_file;
+
 static void print_disassembled_instruction(cpu_t* cpu) {
   u8 opcode = bus_read8(cpu->bus, cpu->pc);
   instruction_t instruction = instructions_table[opcode];
@@ -38,25 +41,33 @@ void cpu_debug_print_state(cpu_t* cpu) {
 }
 
 void cpu_debug_print_log(cpu_t* cpu) {
+  if (!cpu_debug_file) {
+    cpu_debug_file = fopen(CPU_DEBUG_FILE, "w");
+  }
+
   u8 opcode = bus_read8(cpu->bus, cpu->pc);
   instruction_t instruction = instructions_table[opcode];
 
-  printf("%04X  %02X ", cpu->pc, bus_read8(cpu->bus, cpu->pc));
+  fprintf(cpu_debug_file, "%04X  $%02X ", cpu->pc,
+          bus_read8(cpu->bus, cpu->pc));
 
   if (instruction.length == 2) {
-    printf("%02X     ", bus_read8(cpu->bus, cpu->pc + 1));
+    fprintf(cpu_debug_file, "$%02X      ", bus_read8(cpu->bus, cpu->pc + 1));
   } else if (instruction.length == 3) {
-    printf("%02X %02X  ", bus_read8(cpu->bus, cpu->pc + 1),
-           bus_read8(cpu->bus, cpu->pc + 2));
+    fprintf(cpu_debug_file, "$%02X $%02X  ", bus_read8(cpu->bus, cpu->pc + 1),
+            bus_read8(cpu->bus, cpu->pc + 2));
   } else {
-    printf("       ");
+    fprintf(cpu_debug_file, "         ");
   }
 
-  printf("A:%02X ", cpu->a);
-  printf("X:%02X ", cpu->x);
-  printf("Y:%02X ", cpu->y);
-  printf("P:%02X ", cpu_get_status(cpu));
-  printf("SP:%02X ", cpu->sp);
+  fprintf(cpu_debug_file, "A:%02X ", cpu->a);
+  fprintf(cpu_debug_file, "X:%02X ", cpu->x);
+  fprintf(cpu_debug_file, "Y:%02X ", cpu->y);
+  fprintf(cpu_debug_file, "P:%02X ", cpu_get_status(cpu));
+  fprintf(cpu_debug_file, "SP:%02X ", cpu->sp);
+  fprintf(cpu_debug_file, "CPUCYC:%ld", cpu->total_cycles);
 
-  fflush(stdout);
+  fprintf(cpu_debug_file, "\n");
+
+  fflush(cpu_debug_file);
 }
