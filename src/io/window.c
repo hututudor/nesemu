@@ -1,6 +1,7 @@
 #include "window.h"
 
 #include "../peripherals/screen.h"
+#include "../utils/sdl.h"
 #include "window_debug.h"
 
 #define TARGET_FPS 60

@@ -1,7 +1,5 @@
-
 #include "input.h"
-
-#include <SDL2/SDL.h>
+#include "../utils/sdl.h"
 
 bool keys[8] = {false};
 
