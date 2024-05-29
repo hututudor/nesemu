@@ -131,6 +131,18 @@ static u16 ppu_get_nametable_mirrored_address(ppu_t* ppu, u16 address) {
   return address;
 }
 
+static u16 ppu_get_palette_real_address(u16 address, bool is_read) {
+  if (address >= 0x3F10 && address % 4 == 0) {
+    address -= 0x10;
+  }
+
+  if (address >= 0x3F00 && address % 4 == 0 && is_read) {
+    return 0x3F00;
+  }
+
+  return address;
+}
+
 u8 ppu_read8(ppu_t* ppu, u16 address) {
   switch (address & 0x07) {
     case 0x00:
@@ -198,7 +210,8 @@ u8 ppu_internal_read8(ppu_t* ppu, u16 address) {
     return 0;
   }
 
-  return memory_read8(ppu->palette_memory, address - 0x3F00);
+  u16 real_address = ppu_get_palette_real_address(address, true);
+  return memory_read8(ppu->palette_memory, real_address - 0x3F00);
 }
 
 void ppu_internal_write8(ppu_t* ppu, u16 address, u8 value) {
@@ -216,10 +229,11 @@ void ppu_internal_write8(ppu_t* ppu, u16 address, u8 value) {
   }
 
   if (address < 0x3F00 || address > 0x3FFF) {
-    printf("Invalid ppu_internal_read8 with address %04X and value %02X\n",
+    printf("Invalid ppu_internal_write8 with address %04X and value %02X\n",
            address, value);
     return;
   }
 
-  memory_write8(ppu->palette_memory, address - 0x3F00, value);
+  u16 real_address = ppu_get_palette_real_address(address, false);
+  memory_write8(ppu->palette_memory, real_address - 0x3F00, value);
 }

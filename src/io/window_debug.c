@@ -1,5 +1,6 @@
 #include "window_debug.h"
 
+#include "../cpu/cpu.h"
 #include "../peripherals/screen.h"
 
 static u8 palettes_index = 0;
@@ -22,6 +23,8 @@ static void debug_print_log(nes_t* nes) {
     printf("SPRITE (%d, %d) ID = %02X ATTRIBUTE = %02X\n", nes->ppu->oam[i].x,
            nes->ppu->oam[i].y, nes->ppu->oam[i].id, nes->ppu->oam[i].attribute);
   }
+
+  cpu_print_used_instructions(nes->cpu);
 }
 
 void debug_screen_process_event(nes_t* nes, SDL_Event* e) {
@@ -43,23 +46,10 @@ void debug_screen_process_event(nes_t* nes, SDL_Event* e) {
   }
 }
 
-static u16 get_palette_real_address(u16 address) {
-  if (address % 4 == 0) {
-    address &= 0xFFFC;
-  }
-
-  if (address == 0x3F10) {
-    return 0x3F00;
-  }
-
-  return address;
-}
-
 static void render_pallette(nes_t* nes, u16 address, u32 x, u32 y) {
   for (int row = 0; row < 4; row++) {
     for (int col = 0; col < 4; col++) {
-      u8 color_index = ppu_internal_read8(
-          nes->ppu, get_palette_real_address(address + row * 4 + col));
+      u8 color_index = ppu_internal_read8(nes->ppu, address + row * 4 + col);
       color_t color = palette_colors[color_index];
 
       SDL_Rect color_rect;
@@ -106,8 +96,7 @@ static void render_pattern_table(nes_t* nes, u16 address, u32 x, u32 y) {
                              ((pattern_low >> (7 - col)) & 0x01);
 
           u8 color_index = ppu_internal_read8(
-              nes->ppu, get_palette_real_address(0x3F00 + palettes_index * 4 +
-                                                 palette_index));
+              nes->ppu, 0x3F00 + palettes_index * 4 + palette_index);
 
           color_t color = screen_get_palette_color(color_index);
 
@@ -163,8 +152,7 @@ static void render_nametable(nes_t* nes, u16 address, u32 x, u32 y) {
                              ((pattern_low >> (7 - tile_col)) & 0x01);
 
           u8 color_index = ppu_internal_read8(
-              nes->ppu, get_palette_real_address(
-                            0x3F00 + palette_attribute * 4 + palette_index));
+              nes->ppu, 0x3F00 + palette_attribute * 4 + palette_index);
           color_t color = palette_colors[color_index];
 
           SDL_Rect color_rect;
@@ -260,9 +248,7 @@ static void render_sprite(nes_t* nes, int i) {
                          ((pattern_low >> pattern_byte) & 0x01);
 
       u8 color_index = ppu_internal_read8(
-          nes->ppu,
-          get_palette_real_address(0x3F00 + ((attribute & 0x03) << 2) + 0x10 +
-                                   palette_index));
+          nes->ppu, 0x3F00 + ((attribute & 0x03) << 2) + 0x10 + palette_index);
 
       color_t color = palette_colors[color_index];
 

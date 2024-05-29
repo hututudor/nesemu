@@ -234,12 +234,16 @@ static void fetch_visible_sprites(ppu_t* ppu) {
 }
 
 static void update_sprite_shifters(ppu_t* ppu) {
+  if (ppu->scan_line == -1) {
+    return;
+  }
+
   for (u8 i = 0; i < ppu->scan_line_sprites_count; i++) {
     u8 sprite_pattern_bites_low;
     u8 sprite_pattern_bites_high;
 
-    u16 sprite_pattern_address_low;
-    u16 sprite_pattern_address_high;
+    u16 sprite_pattern_address_low = 0;
+    u16 sprite_pattern_address_high = 0;
 
     if (!ppu->ctrl.sprite_size) {
       if (!(ppu->scan_line_sprites[i].attribute & 0x80)) {
@@ -251,7 +255,7 @@ static void update_sprite_shifters(ppu_t* ppu) {
         sprite_pattern_address_low =
             (ppu->ctrl.sprite_pattern_address << 12) |
             (ppu->scan_line_sprites[i].id << 4) |
-            (7 - ppu->scan_line - ppu->scan_line_sprites[i].y);
+            (7 - (ppu->scan_line - ppu->scan_line_sprites[i].y));
       }
     } else {
       if (!(ppu->scan_line_sprites[i].attribute & 0x80)) {
@@ -271,12 +275,12 @@ static void update_sprite_shifters(ppu_t* ppu) {
           sprite_pattern_address_low =
               (ppu->scan_line_sprites[i].id & 0x01) << 12 |
               (((ppu->scan_line_sprites[i].id & 0xFE) + 1) << 4) |
-              ((7 - ppu->scan_line - ppu->scan_line_sprites[i].y) & 0x07);
+              ((7 - (ppu->scan_line - ppu->scan_line_sprites[i].y)) & 0x07);
         } else {
           sprite_pattern_address_low =
               (ppu->scan_line_sprites[i].id & 0x01) << 12 |
               ((ppu->scan_line_sprites[i].id & 0xFE) << 4) |
-              ((7 - ppu->scan_line - ppu->scan_line_sprites[i].y) & 0x07);
+              ((7 - (ppu->scan_line - ppu->scan_line_sprites[i].y)) & 0x07);
         }
       }
     }
