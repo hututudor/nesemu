@@ -2,6 +2,7 @@
 
 #include "../config/globals.h"
 #include "../nes/nes.h"
+#include "../utils/sdl.h"
 #include "../utils/types.h"
 
 #define UPSCALED_SCREEN_WIDTH (SCREEN_WIDTH * SCREEN_SCALE)

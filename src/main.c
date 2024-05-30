@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "io/file_dialog.h"
 #include "io/input.h"
 #include "io/window.h"
 #include "mappers/mapper.h"
@@ -15,12 +16,10 @@ void usage(char* program_name);
 #define PPU_CYCLES_PER_FRAME (CPU_CYCLES_PER_FRAME * 3)
 
 int main(int argv, char** argc) {
-  if (argv < 2) {
-    usage(argc[0]);
-    return 0;
+  if (argv >= 2 && !strcmp(argc[1], "-h")) {
   }
 
-  char* rom_path = argc[1];
+  char* rom_path = argv >= 2 ? argc[1] : file_dialog_pick();
   u8* rom_data = read_entire_file(rom_path);
 
   if (!rom_data) {

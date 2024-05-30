@@ -23,8 +23,6 @@ static void debug_print_log(nes_t* nes) {
     printf("SPRITE (%d, %d) ID = %02X ATTRIBUTE = %02X\n", nes->ppu->oam[i].x,
            nes->ppu->oam[i].y, nes->ppu->oam[i].id, nes->ppu->oam[i].attribute);
   }
-
-  cpu_print_used_instructions(nes->cpu);
 }
 
 void debug_screen_process_event(nes_t* nes, SDL_Event* e) {
