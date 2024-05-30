@@ -5,22 +5,6 @@
 
 u32 frame_count = 0;
 
-static void ppu_export_frame(ppu_t* ppu) {
-  char* path = (char*)calloc(256, sizeof(char));
-  sprintf(path, "frames/frame%d.ppm", frame_count++);
-
-  screen_export_to_ppm(path);
-  screen_clear();
-
-  free(path);
-
-  // temporary hard stop after 1s of frames
-  printf("frame_count: %d\n", frame_count);
-  if (frame_count > 59) {
-    exit(0);
-  }
-}
-
 ppu_t* ppu_create() {
   ppu_t* ppu = (ppu_t*)calloc(1, sizeof(ppu_t));
 

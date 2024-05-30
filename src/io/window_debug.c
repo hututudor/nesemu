@@ -10,14 +10,6 @@ void debug_screen_init() {}
 
 void debug_screen_destroy() {}
 
-static void debug_print_cpu_address8(nes_t* nes, u16 address) {
-  printf("[cpu_address] %04X = %02X\n", address, bus_read8(nes->bus, address));
-}
-
-static void debug_print_cpu_address16(nes_t* nes, u16 address) {
-  printf("[cpu_address] %04X = %04X\n", address, bus_read16(nes->bus, address));
-}
-
 static void debug_print_log(nes_t* nes) {
   for (int i = 0; i < 64; i++) {
     printf("SPRITE (%d, %d) ID = %02X ATTRIBUTE = %02X\n", nes->ppu->oam[i].x,
@@ -274,7 +266,7 @@ static void render_sprites(nes_t* nes) {
   bg_rect.w = 256;
   bg_rect.h = 240;
 
-  SDL_SetRenderDrawColor(renderer, bg_color.r, bg_color.g, bg_color.b, 256);
+  SDL_SetRenderDrawColor(renderer, bg_color.r, bg_color.g, bg_color.b, 0);
   SDL_RenderFillRect(renderer, &bg_rect);
 
   for (int i = 0; i < 64; i++) {

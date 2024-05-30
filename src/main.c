@@ -15,11 +15,12 @@ void usage(char* program_name);
 #define CPU_CYCLES_PER_FRAME 29780
 #define PPU_CYCLES_PER_FRAME (CPU_CYCLES_PER_FRAME * 3)
 
-int main(int argv, char** argc) {
-  if (argv >= 2 && !strcmp(argc[1], "-h")) {
+int main(int argc, char** argv) {
+  if (argc >= 2 && !strcmp(argv[1], "-h")) {
+    usage(argv[0]);
   }
 
-  char* rom_path = argv >= 2 ? argc[1] : file_dialog_pick();
+  char* rom_path = argc >= 2 ? argv[1] : (char*)file_dialog_pick();
   u8* rom_data = read_entire_file(rom_path);
 
   if (!rom_data) {

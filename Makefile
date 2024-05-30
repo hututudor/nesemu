@@ -33,8 +33,6 @@ all: build
 run: build
 	@mkdir -p frames
 	$(OUT) $(ROM)
-	convert frames/*.ppm frames/frame.png
-	rm frames/*.ppm
 
 build: 
 	@mkdir -p build
